@@ -1,0 +1,122 @@
+<?php
+
+/**
+ * Descripción de la clase Cobranza
+ * 
+ * @version 1.0
+ * @author Erick Suarez
+ * @package Controller
+ */
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Cobranza extends CI_Controller {
+    /*
+     * Contructor de la clase y donde se cargan los modelos o utilerias necesarias. 
+     * @access private
+     */
+
+    public function __construct() {
+        parent::__construct();
+        $this->load->model('Cobranza_model', 'cobranza');
+        $this->load->model('Catalogo_model', 'catalogo');
+    }
+
+    public function mi_cuenta($IDExp) {
+        $post = $this->input->post();
+        $where = "";
+
+        if (!empty($post)) {
+            foreach ($post as $key => $value) {
+                $$key = $value;
+            }
+            $busqueda = new Busqueda();
+            $busqueda->Where('e', 'Turno_IDTurno', $fecha);
+            $where = $busqueda->getWhere();
+        }
+        
+//        $data["empleado"] = $this->catalogo->Empleados($where);
+//
+//        $lista = new Lista();
+//        $lista->configButtons('IDExp', 'expediente');
+//        $lista->setThead('Nombre', 'Turno', 'Fec.Alta');
+//        $lista->setRealColumns('NomCompleto', 'Turno_IDTurno', 'FecInscripcion');
+//        $lista->setTbody($data['empleado']);
+//        $data['table'] = $lista->table();
+//
+//        $data['export_buttons'] = Exportar::buttons();
+//        $this->session->set_userdata('Export', Exportar::run($lista, $data['empleado']));
+        
+        $this->load->view('common/header');
+        $this->load->view('cobranza/mi_cuenta');
+        $this->load->view('common/footer');
+    }
+
+//Cuenta esta formado por el IDExp,IDUsuario,IDEstudiante
+    public function cuentas() {
+        $post = $this->input->post();
+        $where = "";
+
+        if (!empty($post)) {
+            foreach ($post as $key => $value) {
+                $$key = $value;
+            }
+            $busqueda = new Busqueda();
+            $busqueda->WhereFullText("e", array('Nombre', 'APaterno', 'AMaterno'), $nombre);
+            $busqueda->WhereFullText("pf", array('Nombre', 'APaterno', 'AMaterno'), $nombreTutor);
+            $busqueda->Where('e', 'Matricula', $matricula);
+            $busqueda->Where('e', 'Turno_IDTurno', $turno);
+            $busqueda->Where('gr', 'IDGrado', $grupo);
+            $busqueda->Where('c', 'IDCuenta', $cuenta);
+            $where = $busqueda->getWhere();
+        }
+        
+        $data['cuentas'] = $this->cobranza->cuentas($where);
+        
+        foreach ($data['cuentas'] as $key => $value) {
+            $tmp = $this->cobranza->debe($value['IDExp']);
+            $data['cuentas'][$key]['Debe'] = $tmp[0]['Debe'];
+        }
+        
+        $lista = new Lista();
+        $lista->configButtons('IDExp', 'expediente');
+        $lista->setThead('No.Cuenta', 'Nom.Estudiante', 'Nom.Tutor','Saldo');
+        $lista->setRealColumns('IDExp', 'NomEstudiante', 'NomTutor','Saldo');
+        $lista->setTbody($data['cuentas']);
+        $data['table'] = $lista->table();
+
+        $data['export_buttons'] = Exportar::btnsPdfPrint();
+        $this->session->set_userdata('Export', Exportar::run($lista, $data['cuentas']));
+        
+        $data["add_js"] = array('MainCobranza','Reinscripcion');
+        $this->load->view('common/header');
+        $this->load->view('cobranza/cuentas', $data);
+        $this->load->view("modal/cobranza/pagar");
+        $this->load->view("modal/cobranza/forma_pago");
+        $this->load->view('common/footer');
+    }
+
+    public function pagar() {
+        $this->load->view('common/header');
+        $this->load->view('cobranza/pagar');
+        $this->load->view('common/footer');
+    }
+    
+    public function forma_pago($IDExp) {
+        $where = "ex.IDExp = ".$IDExp;
+        $data['estudiante'] = $this->catalogo->Estudiantes($where);
+        
+        $data["add_js"] = array('MainCobranza');
+        $this->load->view('common/header');
+        $this->load->view('cobranza/forma_pago',$data);
+        $this->load->view("modal/estudiante/wizard_reinscripcion");
+        $this->load->view('common/footer');
+    }
+    
+    public function reportes() {
+        $this->load->view('common/header');
+        $this->load->view('cobranza/reportes');
+        $this->load->view('common/footer');
+    }
+
+}
