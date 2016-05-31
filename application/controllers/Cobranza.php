@@ -96,6 +96,10 @@ class Cobranza extends CI_Controller {
         $this->load->view('common/footer');
     }
 
+    public function GeneraFechaPago($FrecPago, $Dia) {
+        echo GeneraFechaPago($FrecPago, $Dia);
+    }
+    
     public function pagar() {
         $this->load->view('common/header');
         $this->load->view('cobranza/pagar');
