@@ -50,6 +50,7 @@ class Estudiante_model extends CI_Model {
         $this->db->insert('usuario', $data);
         $IDEstudianteUsuario = $this->db->insert_id();
         $this->setIDEstudianteUsuario($IDEstudianteUsuario);
+        return $IDEstudianteUsuario;
     }
 
     public function InsEstudiante($post) {
@@ -73,6 +74,7 @@ class Estudiante_model extends CI_Model {
         $this->db->insert('estudiante', $data);
         $IDEstudiante = $this->db->insert_id();
         $this->setIDEstudiante($IDEstudiante);
+        return $IDEstudiante;
     }
 
     public function InsGrupo($post) {
@@ -113,6 +115,8 @@ class Estudiante_model extends CI_Model {
             "Observacion" => $post["Pobserva"]
         );
         $this->db->insert('padresfam', $data);
+        $IDPadFam = $this->db->insert_id();
+        return $IDPadFam;
     }
 
     public function InsUsuarioMadre($post) {
@@ -123,6 +127,7 @@ class Estudiante_model extends CI_Model {
         $this->db->insert('usuario', $data);
         $IDMadreUsuario = $this->db->insert_id();
         $this->setIDMadreUsuario($IDMadreUsuario);
+        return $IDMadreUsuario;
     }
 
     public function InsMadreFam($post) {
@@ -145,6 +150,8 @@ class Estudiante_model extends CI_Model {
             "Observacion" => $post["Mobserva"]
         );
         $this->db->insert('padresfam', $data);
+        $IDMadFam = $this->db->insert_id();
+        return $IDMadFam;
     }
 
     public function InsExpediente($post) {
