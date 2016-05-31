@@ -3,7 +3,6 @@
         <!--Busqueda-->
         <div class="panel-body">
         <h4 class="page-section-heading">Cuentas</h4>
-            <?php echo $export_buttons; ?>
         </div>
         <div class="panel panel-default">
             <?php echo form_open(current_url()); ?>
