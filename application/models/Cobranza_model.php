@@ -34,8 +34,10 @@ class Cobranza_model extends CI_Model {
     }
     
     public function debe($IDExp) {
-        $sql = "SELECT *,sum(s.Precio) as Debe FROM serviciocontratado as sc 
+        $sql = "select *,(sum(s.Precio) - ((sum(s.Precio) * ex.DescntoColegiatura) / 100)) as Debe 
+                from serviciocontratado as sc 
                 left join servicio as s on s.IDServicio = sc.Servicio_IDServicio
+                left join expediente as ex on ex.IDExp = sc.Expediente_IDExp
                 where sc.Expediente_IDExp = $IDExp";
         return $this->getQuery($sql);
     }
