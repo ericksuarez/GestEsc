@@ -8,7 +8,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="panel panel-default">
-                        <div id="resp-reinsc" style="z-index: 100;position: fixed;"></div>
+                        <div id="resp-FP" style="z-index: 100;position: fixed;"></div>
                         <div class="panel-body">
                             <div class="row">
                                 <p>
@@ -31,7 +31,7 @@
                                     <h6>Dias de la semana</h6>
                                     <select class="form-control" name="diasemanal" id="diasemanal" >
                                         <option value="0">Selecciona una opción</option>
-                                        <?php foreach (DiasSemana() as $k => $value){?>
+                                        <?php foreach (NumDiasSemana() as $k => $value){?>
                                         <option value="<?php echo $k?>"><?php echo $value?></option>
                                         <?php }?>
                                     </select>
@@ -54,6 +54,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <input type="hidden" id="FP-IDExp" value="">
                     <button type="button" class="btn btn-danger" data-dismiss="modal" id="FPcancelar">Cancelar</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal" id="FPsalir" style="display: none">Salir</button>
                     <button type="button" class="btn btn-success" id="FPguardar">Guardar</button>

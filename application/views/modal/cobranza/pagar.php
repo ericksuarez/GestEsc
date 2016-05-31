@@ -11,6 +11,7 @@
                         <div id="resp-reinsc" style="z-index: 100;position: fixed;"></div>
                         <div class="panel-body">
                             <div class="row">
+                                <label id="Parcialidad">Parcialidad</label>
                                 <div class="col-md-12" id="listado_servicios">
                                     <h6>Pagar Servicios</h6>
                                     <?php echo getCatOpcionesCheckBoxes("CatServicio", "REservicio[]") ?>
@@ -24,11 +25,11 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="REcancelar">Cancelar</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="REsalir" style="display: none">Salir</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="PScancelar">Cancelar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="PSsalir" style="display: none">Salir</button>
                     <!--<button type="button" class="btn btn-primary" id="RErecibo" style="display: none">Recibo</button>-->
                     <a class="btn btn-primary btnPrint" href="<?php echo site_url('imprimir/recibo_reinscripcion'); ?>" id="RErecibo" style="display: none">Recibo</a>
-                    <button type="button" class="btn btn-success" id="REguardar" data-save-ID="">Guardar</button>
+                    <button type="button" class="btn btn-success" id="PSguardar" data-save-ID="">Guardar</button>
                 </div>
             </div>
         </div>
