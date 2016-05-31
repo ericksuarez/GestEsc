@@ -1,23 +1,21 @@
-
-
 <div id="content">
     <div class="container-fluid">
-        <h4 class="page-section-heading">Cuentas</h4>
         <!--Busqueda-->
         <div class="panel-body">
+        <h4 class="page-section-heading">Cuentas</h4>
             <?php echo $export_buttons; ?>
         </div>
         <div class="panel panel-default">
             <?php echo form_open(current_url()); ?>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <h5>Nombre Alumno</h5>
                         <div class="form-group">
                             <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre(s) Apellido paterno Apellido materno" value="<?php echo set_value('nombre'); ?>">
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <h5>Nombre Tutor</h5>
                         <div class="form-group">
                             <input type="text" class="form-control" name="nombreTutor" id="nombreTutor" placeholder="Nombre(s) Apellido paterno Apellido materno" value="<?php echo set_value('nombreTutor'); ?>">
@@ -82,11 +80,12 @@
                         <thead>
                             <tr>
                                 <th><b>No.Cuenta</b></th>
-                                <th><b>Nom.Estudiante</b></th>
-                                <th><b>Nom.Tutor</b></th>
+                                <th><b>Nombres</b></th>
+                                <th><b>Fechas Pago</b></th>
                                 <th><b>Acción</b></th>
-                                <th><b>Saldo</b></th>
+                                <th><b>Saldo en la Cuenta</b></th>
                             </tr>
+                        </thead>
                         <tbody>
                             <?php foreach ($cuentas as $key => $value) { ?>
                                 <tr>
@@ -96,13 +95,22 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <p><?php echo $value['NomEstudiante'] ?></p>
+                                        <p class="text"><b>Nombre estudiante: </b><?php echo $value['NomEstudiante'] ?></p>
+                                        <p class="text"><b>Nombre tutor: </b><?php echo $value['NomTutor'] ?></p>
                                     </td>
                                     <td>
-                                        <p><?php echo $value['NomTutor'] ?></p>
+                                        <p><b>Fecha limite de pago: </b><br>
+                                            <i id="fecha_limite_pago_<?php echo $value['IDExp']?>">
+                                                <?php echo GeneraFechaPago($value['FrecPago'], $value['Dia']); ?></i></p>
+                                        <p><b>Fecha último pago: </b><br>
+                                            <i><?php
+                                                $fechaUltimoPago = FechaUltimoPago($value['IDExp']);
+                                                $date = new DateTime($fechaUltimoPago);
+                                                echo $date->format('d/m/Y g:i A');
+                                                ?></p><i>
                                     </td>
                                     <td>
-                                        <?php if (FecFormato($value['FecPago']) < date('Y-m-d')) { ?>
+                                     <?php if ($date->format('Y-m-d') < date('Y-m-d')) { ?>
                                             <p>
                                                 <button data-mood='create' 
                                                         data-backdrop='static' 
@@ -110,39 +118,43 @@
                                                         data-ID='<?php echo $value['IDExp']; ?>' 
                                                         data-User='<?php echo $value['Usuario_IDUsuario']; ?>'
                                                         data-Descuento='<?php echo $value['DescntoColegiatura']; ?>' 
-                                                        data-Recargo='<?php echo CalculaRecargo($value['IDExp']); ?>'
+                                                        data-Recargo='<?php echo CalculaRecargo($value['IDExp'], $value['Usuario_IDUsuario']); ?>'
+                                                        data-FrecPago='<?php echo $value['FrecPago']; ?>'
                                                         data-toggle="modal" data-target="#wizard-reincripcion" data-content-options="modal-lg" 
-                                                        class="REINSCRIPCION btn btn-primary btn-stroke btn-xs"><i class="fa fa-exclamation-circle"></i>
+                                                        class="PAGARSERV btn btn-primary btn-stroke btn-xs"><i class="fa fa-exclamation-circle"></i>
                                                     &nbsp; Pagar Servicio</button>        
                                             </p>
                                         <?php } else { ?>
                                             <p><label class="success text-center">Pagado</label></p>
-                                        <?php } ?>
+                                     <?php } ?>
                                         <p>
                                             <button 
                                                 data-backdrop='static' 
                                                 data-keyboard='false'
+                                                data-ID='<?php echo $value['IDExp']; ?>'
                                                 data-Cuenta='<?php echo $value['IDCuenta']; ?>'
-                                                data-IDEstudiante='<?php echo $value['Usuario_IDUsuario']; ?>'
-                                                data-IDTutor='<?php echo $value['Usuario_IDUsuario']; ?>'
+                                                data-IDEstudiante='<?php echo $value['IDEstudiante']; ?>'
+                                                data-IDTutor='<?php echo $value['IDPadFam']; ?>'
+                                                data-FrecPago='<?php echo $value['FrecPago']; ?>'
+                                                data-Dia='<?php echo $value['Dia']; ?>'
                                                 data-toggle="modal" data-target="#forma-pago" data-content-options="modal-lg" 
-                                                class="FORMAPAGO btn btn-primary btn-stroke btn-xs"><i class="fa fa-exclamation-circle"></i>
+                                                class="FORMAPAGO btn btn-warning btn-stroke btn-xs"><i class="fa fa-exclamation-circle"></i>
                                                 &nbsp; Forma de Pago</button>        
                                         </p>
                                     </td> 
-                                    <?php if ($value['Saldo'] - $value['Debe'] > 0) { ?>
-                                        <td>
-                                            <label class="text-muted"><?php echo $value['Saldo'] - $value['Debe'] ?></label>
+                                     <?php if ($value['Saldo'] - $value['Debe'] >= 0) { ?>
+                                        <td class="text-center">
+                                            <label><?php echo $value['Saldo'] - $value['Debe'] ?></label>
                                         </td>
-                                    <?php } else { ?>
-                                        <td class="danger">
-                                            <label class="text-white"><?php echo $value['Saldo'] - $value['Debe'] ?></label>
+                                     <?php } else { ?>
+                                        <td class="danger text-center">
+                                            <label style="color: white">
+                                                $ <?php echo $value['Saldo'] - $value['Debe'] ?></label>
                                         </td>
-                                    <?php } ?>
+                                <?php } ?>
                                 </tr>
-                            <?php } ?>
+                        <?php } ?>
                         </tbody>
-                        </thead>
                     </table>
                 </div>
             </div>
