@@ -49,11 +49,25 @@ class Cobranza_model extends CI_Model {
         return $this->getQuery($sql);
     }
     
-    public function allMovimientos($IDExp) {
-        $sql = "SELECT * FROM pago as p 
+    public function allMovimientos($IDExp,$where='') {
+        $sql = "SELECT *,(p.Total*0.16) as IVA FROM pago as p 
+                where p.Expediente_IDExp = ". $IDExp ." ".$where." order by p.FecPago desc";
+        return $this->getQuery($sql);
+    }
+    
+    public function serviciosContratados($IDExp) {
+        $sql = "SELECT *  FROM serviciocontratado as sc
+                left join servicio as s on s.IDServicio = sc.Servicio_IDServicio
+                WHERE sc.Expediente_IDExp = ". $IDExp;
+        return $this->getQuery($sql);
+    }
+    
+    public function detallesPago($IDExp,$IDPago) {
+        $sql = "SELECT ps.*,se.*,u.* FROM pago as p 
                 left join pago_has_servicio as ps on ps.Pago_IDPago = p.IDPago and ps.Expediente_IDExp = p.Expediente_IDExp
                 left join servicio as se on se.IDServicio = ps.Servicio_IDServicio
-                where p.Expediente_IDExp = ". $IDExp;
+                left join unidades as u on u.IDUnidad = ps.Unidad_IDUnidad
+                where p.Expediente_IDExp = ".$IDExp."  and ps.Pago_IDPago = ".$IDPago;
         return $this->getQuery($sql);
     }
     
