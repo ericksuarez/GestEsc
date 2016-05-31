@@ -17,6 +17,7 @@ class Estudiante extends CI_Controller {
         $this->load->model("Catalogo_model", "catalogo");
         $this->load->model("ConsultaGral", "gral");
         $this->load->model("Curricular_model", "curricular");
+        $this->load->model("Pago_model", "pago");
     }
 
     public function alta() {
@@ -29,7 +30,7 @@ class Estudiante extends CI_Controller {
     public function lista() {
         $post = $this->input->post();
         $where = "";
-        
+
         if (!empty($post)) {
             foreach ($post as $key => $value) {
                 $$key = $value;
@@ -44,15 +45,15 @@ class Estudiante extends CI_Controller {
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
 
         $lista = new Lista();
-        $lista->configButtons('IDExp','expediente');
-        $lista->setThead('Nombre','Grupo','Turno','Promedio Gral.','Desc.Col.');
-        $lista->setRealColumns('NomCompleto','GradoGrupo','Turno_IDTurno','PromedioGral','DescntoColegiatura');
+        $lista->configButtons('IDExp', 'expediente');
+        $lista->setThead('Nombre', 'Grupo', 'Turno', 'Promedio Gral.', 'Desc.Col.');
+        $lista->setRealColumns('NomCompleto', 'GradoGrupo', 'Turno_IDTurno', 'PromedioGral', 'DescntoColegiatura');
         $lista->setTbody($data['estudiante']);
         $data['table'] = $lista->table();
-        
+
         $data['export_buttons'] = Exportar::buttons();
-        $this->session->set_userdata('Export',  Exportar::run($lista, $data['estudiante']));
-        
+        $this->session->set_userdata('Export', Exportar::run($lista, $data['estudiante']));
+
         $this->load->view('common/header');
         $this->load->view('estudiante/lista', $data);
         $this->load->view('common/footer');
@@ -99,15 +100,22 @@ class Estudiante extends CI_Controller {
             $this->load->view('common/footer');
         } else {
             $this->study->InsDireccion($post);
-            $this->study->InsUsuarioEstudiante($post);
-            $this->study->InsEstudiante($post);
+            $IDUsuario = $this->study->InsUsuarioEstudiante($post);
+            $IDEstudiante = $this->study->InsEstudiante($post);
             $this->study->InsGrupo($post);
             $this->study->InsUsuarioPadre($post);
-            $this->study->InsPadreFam($post);
+            $IDPadFam = $this->study->InsPadreFam($post);
             $this->study->InsUsuarioMadre($post);
-            $this->study->InsMadreFam($post);
+            $IDMadFam = $this->study->InsMadreFam($post);
             $IDExp = $this->study->InsExpediente($post);
             $this->study->Servicios($IDExp, $this->study->getIDEstudianteUsuario(), 1);
+            //IDCuenta esta formado por el IDExp,IDUsuario,IDEstudiante
+            $post = array(
+                "Cuenta" => str_pad($IDExp.$IDUsuario.$IDEstudiante, 12, "0", STR_PAD_LEFT),
+                "IDEstudiante" => $IDEstudiante,
+                "IDTutor" => isset($post["Mtutor"]) ? $IDMadFam : $IDPadFam,
+            );
+            $this->pago->InsFormaPago($post);
 
             redirect('expediente/modificar/' . $IDExp);
         }
@@ -141,7 +149,7 @@ class Estudiante extends CI_Controller {
     public function reinscripcion() {
         $post = $this->input->post();
         $where = "";
-        
+
         if (!empty($post)) {
             foreach ($post as $key => $value) {
                 $$key = $value;
@@ -153,19 +161,19 @@ class Estudiante extends CI_Controller {
             $busqueda->Where('gr', 'IDGrado', $grupo);
             $where = $busqueda->getWhere();
         }
-        
+
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
-        
+
         $lista = new Lista();
-        $lista->setThead('Matricula','Nombre Completo','Grupo','Turno');
+        $lista->setThead('Matricula', 'Nombre Completo', 'Grupo', 'Turno');
         $lista->setActiveTfoot(FALSE);
-        $lista->setRealColumns('Matricula','NomCompleto','GradoGrupo','Turno_IDTurno');
+        $lista->setRealColumns('Matricula', 'NomCompleto', 'GradoGrupo', 'Turno_IDTurno');
         $lista->setExport('export');
         $lista->setTbody($data['estudiante']);
-        
+
         $data['export_buttons'] = Exportar::buttons();
-        $this->session->set_userdata('Export',  Exportar::run($lista, $data['estudiante']));
-        
+        $this->session->set_userdata('Export', Exportar::run($lista, $data['estudiante']));
+
         $data["add_js"] = array('MainReinscripcion', 'Reinscripcion');
         $this->load->view('common/header');
         $this->load->view('estudiante/reinscripcion', $data);
@@ -177,12 +185,12 @@ class Estudiante extends CI_Controller {
      * Funcion para ver las calificaciones de los alumnos
      */
 
-    public function calificaciones($IDUsuario=0) {
-        $where = $IDUsuario == 0 ? "u.IdUsuario = ".$this->session->userdata('IdUsuario') : "u.IdUsuario = ".$IDUsuario;
+    public function calificaciones($IDUsuario = 0) {
+        $where = $IDUsuario == 0 ? "u.IdUsuario = " . $this->session->userdata('IdUsuario') : "u.IdUsuario = " . $IDUsuario;
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
-        
+
         $this->load->view('common/header');
-        $this->load->view('estudiante/calificaciones',$data);
+        $this->load->view('estudiante/calificaciones', $data);
         $this->load->view('common/footer');
     }
 
@@ -197,14 +205,13 @@ class Estudiante extends CI_Controller {
         $this->load->view('common/footer');
     }
 
-
-    public function kardex($IDUsuario=0) {
-        $where = $IDUsuario == 0 ? "u.IdUsuario = ".$this->session->userdata('IdUsuario') : "u.IdUsuario = ".$IDUsuario;
+    public function kardex($IDUsuario = 0) {
+        $where = $IDUsuario == 0 ? "u.IdUsuario = " . $this->session->userdata('IdUsuario') : "u.IdUsuario = " . $IDUsuario;
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
         $data['grados_escolares'] = $this->catalogo->CatGradoEsc();
-        
+
         $this->load->view('common/header');
-        $this->load->view('estudiante/kardex',$data);
+        $this->load->view('estudiante/kardex', $data);
         $this->load->view('common/footer');
     }
 
@@ -261,10 +268,10 @@ class Estudiante extends CI_Controller {
             }
         }
         $data["docente"] = $this->catalogo->Docentes($where);
-        
+
         $data["add_js"] = array('MainEvaDocente');
         $this->load->view('common/header');
-        $this->load->view('estudiante/evaluacion_profesor',$data);
+        $this->load->view('estudiante/evaluacion_profesor', $data);
         $this->load->view('common/footer');
     }
 
