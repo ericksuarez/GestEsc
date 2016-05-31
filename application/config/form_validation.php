@@ -114,5 +114,5 @@ $config = array(
     ),
     'pago_servicios' => array(
         array('field' => 'DescBaja', 'label' => 'Observaciones', 'rules' => 'required|trim'),
-    )
+    ),
 );
