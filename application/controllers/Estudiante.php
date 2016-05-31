@@ -188,7 +188,7 @@ class Estudiante extends CI_Controller {
     public function calificaciones($IDUsuario = 0) {
         $where = $IDUsuario == 0 ? "u.IdUsuario = " . $this->session->userdata('IdUsuario') : "u.IdUsuario = " . $IDUsuario;
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
-
+        $data['calificaciones'] = $this->study->getCalificaciones($data['estudiante'][0]['IDEstudiante'],$data['estudiante'][0]['Grado']);
         $this->load->view('common/header');
         $this->load->view('estudiante/calificaciones', $data);
         $this->load->view('common/footer');
@@ -208,8 +208,10 @@ class Estudiante extends CI_Controller {
     public function kardex($IDUsuario = 0) {
         $where = $IDUsuario == 0 ? "u.IdUsuario = " . $this->session->userdata('IdUsuario') : "u.IdUsuario = " . $IDUsuario;
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
-        $data['grados_escolares'] = $this->catalogo->CatGradoEsc();
-
+        
+        $data['export_buttons'] = Exportar::btnsPdfPrint();
+        $this->session->set_userdata('Export', $this->load->view('estudiante/kardex', $data, true));
+        
         $this->load->view('common/header');
         $this->load->view('estudiante/kardex', $data);
         $this->load->view('common/footer');
