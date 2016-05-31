@@ -117,8 +117,10 @@
                                     <?php if ($info['Inscrito'] == 0) { ?>
                                         <td><p>
                                         <button data-mood='create' data-backdrop='static' data-keyboard='false'
-                                                data-ID='<?php echo $info['IDExp'];?>' data-User='<?php echo $info['IdUsuario'];?>'
-                                                data-Descuento='<?php echo $info['DescntoColegiatura'];?>' data-Recargo='<?php echo CalculaRecargo($info['IDExp']);?>'
+                                                data-ID='<?php echo $info['IDExp'];?>' 
+                                                data-User='<?php echo $info['IdUsuario'];?>'
+                                                data-Descuento='<?php echo $info['DescntoColegiatura'];?>' 
+                                                data-Recargo='<?php echo CalculaRecargo($info['IDExp'],$info['IdUsuario']);?>'
                                                 data-toggle="modal" data-target="#wizard-reincripcion" data-content-options="modal-lg" 
                                                 class="REINSCRIPCION btn btn-primary btn-stroke btn-xs"><i class="fa fa-exclamation-circle"></i>&nbsp; Reinscribir</button>        
                                             </p>
