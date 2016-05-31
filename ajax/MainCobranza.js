@@ -347,11 +347,12 @@ $(document).ready(function () {
         var IDExp = $(this).attr('data-IDExp');
         var IDPago = $(this).attr('data-IDPago');
         var html = "";
-        $("#lista_detalles > tbody").append("");
+        
+        $("#detallitos").remove();
 
         $.getJSON(URL + 'ajax/detallesPago/' + IDExp + '/' + IDPago, function (datalles) {
             $.each(datalles, function (key, value) {
-                html += "<tr>";
+                html += "<tr id='detallitos'>";
                 html += "<td>" + value.IDPagSer + "</td>";
 //                html += "<td>" + value.FecPago + "</td>";
                 html += "<td>" + value.Descripcion + "</td>";
@@ -359,6 +360,7 @@ $(document).ready(function () {
                 html += "<td>" + value.Descuento + "</td>";
                 html += "<td>" + value.Recargo + "</td>";
                 html += "<td>" + value.SubTotal + "</td>";
+                html += "<td>" + value.IVA + "</td>";
                 html += "<td>" + value.Total + "</td>";
                 html += "</tr>";
             });
