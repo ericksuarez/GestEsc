@@ -118,6 +118,11 @@ class Catalogo_model extends CI_Model {
         return $this->getOnlyRow($sql);
     }
 
+    public function CatPeriodosEsc() {
+        $sql = "select IDPeriodo as 'index',Descripcion as opcion from periodo";
+        return $this->getQuery($sql);
+    }
+    
     public function getQuery($sql) {
         $query = $this->db->query($sql);
 
