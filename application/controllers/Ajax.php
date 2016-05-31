@@ -192,10 +192,38 @@ class Ajax extends CI_Controller {
                     if (!empty($servicios[0])) {
                         foreach ($servicios as $key => $value) {
                             $info = $this->study->Servicios($post['IDExp'], $PKs['Usuario_IDUsuario'], $value);
+
                             $post["Descuento"] = ($info[0]['Precio'] * $PKs['DescntoColegiatura']) / 100;
                             $IVA = (($info[0]['Precio'] - $post["Descuento"]) * 16) / 100;
                             $post["SubTotal"] = ($info[0]['Precio'] - $post["Descuento"]) - $IVA;
                             $post["Total"] = $info[0]['Precio'] - $post["Descuento"];
+
+                            switch ($PKs['FrecPago']) {
+                                case 'SEMANAL':
+                                    $precio_parcialidad = $info[0]['Precio'] / 4;
+                                    $post["Descuento"] = 0;
+                                    $IVA = (($precio_parcialidad - $post["Descuento"]) * 16) / 100;
+                                    $post["SubTotal"] = ($precio_parcialidad - $post["Descuento"]) - $IVA;
+                                    $post["Total"] = $precio_parcialidad - $post["Descuento"];
+                                    break;
+                                case 'QUINCENAL':
+                                    $precio_parcialidad = $info[0]['Precio'] / 2;
+                                    $post["Descuento"] = 0;
+                                    $IVA = (($precio_parcialidad - $post["Descuento"]) * 16) / 100;
+                                    $post["SubTotal"] = ($precio_parcialidad - $post["Descuento"]) - $IVA;
+                                    $post["Total"] = $precio_parcialidad - $post["Descuento"];
+                                    break;
+                                case 'MENSUAL':
+                                    $precio_parcialidad = $info[0]['Precio'];
+                                    $post["Descuento"] = 0;
+                                    $IVA = (($precio_parcialidad - $post["Descuento"]) * 16) / 100;
+                                    $post["SubTotal"] = ($precio_parcialidad - $post["Descuento"]) - $IVA;
+                                    $post["Total"] = $precio_parcialidad - $post["Descuento"];
+                                    break;
+                                default:
+                                    break;
+                            }
+
                             $this->pago->InsPagoDetalle($post, $post['IDExp'], $value, $info[0]['IDUnidad']);
                         }
                     }
@@ -326,9 +354,9 @@ class Ajax extends CI_Controller {
         echo $html;
     }
 
-    function detallesPago($IDExp,$IDPago) {
+    function detallesPago($IDExp, $IDPago) {
         header('Content-Type: application/json');
-        $datalles = $this->cobranza->detallesPago($IDExp,$IDPago);
+        $datalles = $this->cobranza->detallesPago($IDExp, $IDPago);
         echo json_encode($datalles);
     }
 
