@@ -13,7 +13,7 @@ $(document).ready(function () {
 
 //PARA REALIZAR LA SUMA Y GUARDADO DEL PAGO DE LOS SERVICIOS    
     $('.PAGARSERV').click(function () {
-        
+
         var MODO = $(this).attr('data-mood');
         var IDExp = $(this).attr('data-ID');
         var IDUser = $(this).attr('data-User');
@@ -51,11 +51,11 @@ $(document).ready(function () {
         var correcto = "<div class='alert alert-success alert-dismissible' role='alert' style='box-shadow: 5px 5px 7px #888888;'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Exito!</strong> El Pagó se realizo.</div>";
         var error_enc = "<div class='alert alert-danger alert-dismissible' role='alert' style='box-shadow: 5px 5px 7px #888888;'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>Error!</strong>";
         var error_pie = "</div>";
-        
+
         var descuento = $('#descuento').text();
         var total = $('#total_a_apagar').text();
         var subtotal = total - IVA(total);
-        
+
         var request = $.ajax({
             url: URL + 'ajax/pago_servicios/' + MODO,
             method: 'POST',
@@ -87,11 +87,11 @@ $(document).ready(function () {
             alert('FALLO AL GUARDAR EL PAGO: ' + jqXHR);
         });
     }
-    
+
     $('#PSsalir').click(function () {
         location.reload();
     });
-    
+
 //FUNCIONES PARA DETERMINAR Y DEFINIR EL TIPO DE FRECUENCIA CON LA QUE SE REALIZARAN
 //LOS PAGOS DE LOS SERVICIOS
     $('#frecpago').change(function () {
@@ -225,15 +225,15 @@ $(document).ready(function () {
 
 //FUNCION PARA CALCULAR EL COSTO DE LA COLEGIATURA
     $('input[type=checkbox]').click(function () {
-        
+
         var total_colegiatura = 0.00;
-        
+
         $('#listado_servicios input[type=checkbox]').each(function () {
             if (this.checked) {
                 var precio_servicio = parseFloat($(this).attr('data-price'));
                 var label = $(this).attr('id');
                 var precio_parcialidad = 0.00;
-                
+
                 switch (FRECPAGO) {
                     case 'SEMANAL':
                         precio_parcialidad = precio_servicio / 4;
@@ -252,7 +252,7 @@ $(document).ready(function () {
                 }
             }
         });
-        
+
         var tmp = $("#descuento").attr('data-por-desc');
         var descontando = (total_colegiatura * tmp) / 100;
         total_colegiatura -= descontando;
@@ -338,4 +338,32 @@ $(document).ready(function () {
         var total_con_iva = (total * IVA_GLOBAL) / 100;
         return total_con_iva;
     }
+
+    /***************************************************************************
+     * FUNCIONES PARA VER LOS DETALLES DE LOS PAGOS REALIZADOS                 *
+     ***************************************************************************/
+
+    $('.DETALLEPAGO').click(function () {
+        var IDExp = $(this).attr('data-IDExp');
+        var IDPago = $(this).attr('data-IDPago');
+        var html = "";
+        $("#lista_detalles > tbody").append("");
+
+        $.getJSON(URL + 'ajax/detallesPago/' + IDExp + '/' + IDPago, function (datalles) {
+            $.each(datalles, function (key, value) {
+                html += "<tr>";
+                html += "<td>" + value.IDPagSer + "</td>";
+//                html += "<td>" + value.FecPago + "</td>";
+                html += "<td>" + value.Descripcion + "</td>";
+                html += "<td>" + value.Nombre + "</td>";
+                html += "<td>" + value.Descuento + "</td>";
+                html += "<td>" + value.Recargo + "</td>";
+                html += "<td>" + value.SubTotal + "</td>";
+                html += "<td>" + value.Total + "</td>";
+                html += "</tr>";
+            });
+            $("#lista_detalles > tbody").append(html);
+        });
+    });
+
 });
