@@ -312,6 +312,7 @@ class Estudiante_model extends CI_Model {
                 left join usuario as u on u.IdUsuario = ex.Usuario_IDUsuario
                 left join estudiante as es on es.Usuario_IdUsuario = u.IdUsuario
                 left join grupo as g on g.Estudiante_IDEstudiante = es.IDEstudiante
+                left join cuenta as c on c.IDEstudiante = es.IDEstudiante
                 where ex.IDExp = " . $IDExp;
         return $this->getOnlyRow($sql);
     }
