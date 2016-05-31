@@ -159,7 +159,7 @@ $(document).ready(function () {
         });
 
         request.fail(function (jqXHR, textStatus) {
-            alert('Fallo al guardar la Reinscripcion: ' + textStatus);
+            alert('Fallo es Servicio Contratado: ' + textStatus);
         });
         return resp;
     }
