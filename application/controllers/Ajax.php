@@ -5,7 +5,8 @@
  *
  * @author Erick Suarez
  */
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
 
 class Ajax extends CI_Controller {
 
@@ -167,7 +168,7 @@ class Ajax extends CI_Controller {
 
         echo $html;
     }
-    
+
     public function pago_servicios($modo) {
         $post = $this->input->post();
         $html = "";
@@ -291,7 +292,7 @@ class Ajax extends CI_Controller {
         }
         echo $html;
     }
-    
+
     function EliminaMateriaAsignada() {
         $post = $this->input->post();
         $html = "";
@@ -302,16 +303,28 @@ class Ajax extends CI_Controller {
         $this->db->query($sql);
         echo $sql;
     }
-    
+
     function forma_pago() {
         $post = $this->input->post();
         $html = "";
+        $error = "";
         
+        $error .= $post["FrecPago"] == "0" ? "La Frecuencia de Pago es obligatoria.<br>" : "";
+        $error .= $post["Dia"] == "0" ? "El Dia de Pago es obligatorio." : "";
         
-        
+        if ($error != "") {
+            $html = '<div class="alert alert-danger alert-dismissible" role="alert" style="box-shadow: 5px 5px 7px #888888;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    ' . $error . '
+                </div>';
+        } else {
+            $this->pago->UpdFormaPago($post);
+            $html = 'OK';
+        }
+
         echo $html;
     }
-
+    
     public function getQuery($sql) {
         $query = $this->db->query($sql);
 
