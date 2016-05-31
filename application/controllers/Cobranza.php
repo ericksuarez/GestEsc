@@ -34,17 +34,6 @@ class Cobranza extends CI_Controller {
         $data['servicios'] = $this->cobranza->serviciosContratados($IDExp);
         $data['movimientos'] = $this->cobranza->allMovimientos($IDExp, $where);
 
-//
-//        $lista = new Lista();
-//        $lista->configButtons('IDExp', 'expediente');
-//        $lista->setThead('Nombre', 'Turno', 'Fec.Alta');
-//        $lista->setRealColumns('NomCompleto', 'Turno_IDTurno', 'FecInscripcion');
-//        $lista->setTbody($data['empleado']);
-//        $data['table'] = $lista->table();
-//
-//        $data['export_buttons'] = Exportar::buttons();
-//        $this->session->set_userdata('Export', Exportar::run($lista, $data['empleado']));
-
         $data["add_js"] = array('MainCobranza');
         $this->load->view('common/header');
         $this->load->view('cobranza/mi_cuenta', $data);
@@ -77,16 +66,6 @@ class Cobranza extends CI_Controller {
             $tmp = $this->cobranza->debe($value['IDExp']);
             $data['cuentas'][$key]['Debe'] = $tmp[0]['Debe'];
         }
-
-        $lista = new Lista();
-        $lista->configButtons('IDExp', 'expediente');
-        $lista->setThead('No.Cuenta', 'Nom.Estudiante', 'Nom.Tutor', 'Saldo');
-        $lista->setRealColumns('IDExp', 'NomEstudiante', 'NomTutor', 'Saldo');
-        $lista->setTbody($data['cuentas']);
-        $data['table'] = $lista->table();
-
-        $data['export_buttons'] = Exportar::btnsPdfPrint();
-        $this->session->set_userdata('Export', Exportar::run($lista, $data['cuentas']));
 
         $data["add_js"] = array('MainCobranza', 'Reinscripcion');
         $this->load->view('common/header');
