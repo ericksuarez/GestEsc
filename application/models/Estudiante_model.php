@@ -346,6 +346,36 @@ class Estudiante_model extends CI_Model {
         return $query;
     }
 
+    public function getKardex($IDEstudiante,$IDMateria) {
+        $sql = "select *,TRUNCATE((sum(ec.Calificacion) / count(ec.Periodo_IDPeriodo)), 2) as Promedio 
+                from grado_escolar as ge
+                left join materia as m on m.GradoEsc_IDGradoEsc = ge.IDGradoEsc
+                left join evaluacioncont as ec on ec.Materia_IDMateria = m.IDMateria
+                where ec.Estudiante_IDEstudiante = ".$IDEstudiante." and ec.Materia_IDMateria = ".$IDMateria."
+                group by ge.IDGradoEsc,ec.Materia_IDMateria
+                order by ge.IDGradoEsc,ec.Periodo_IDPeriodo,m.Nombre";
+        return $this->getQuery($sql);
+    }
+    
+    public function getCalificaciones($IDEstudiante,$IDGradoEsc) {
+        $sql = "SELECT * FROM evaluacioncont as ec
+                left join materia as m on m.IDMateria = ec.Materia_IDMateria
+                left join tareas as t on t.IDTareas = ec.Tareas_IDTareas
+                left join periodo as p on p.IDPeriodo = ec.Periodo_IDPeriodo
+                where ec.Estudiante_IDEstudiante = ".$IDEstudiante." and m.GradoEsc_IDGradoEsc = ".$IDGradoEsc."
+                group by ec.Periodo_IDPeriodo,ec.Tareas_IDTareas
+                order by ec.Periodo_IDPeriodo,ec.Tareas_IDTareas";
+        return $this->getQuery($sql);
+    }
+    
+    public function getMateriasGradoEsc($GradoEsc) {
+        $sql = "select * from grado_escolar as gc
+                left join materia as m on m.GradoEsc_IDGradoEsc=gc.IDGradoEsc
+                where gc.GradoEsc = ".$GradoEsc."
+                order by gc.IDGradoEsc,m.Nombre";
+        return $this->getQuery($sql);
+    }
+    
     public function getQuery($sql) {
         $query = $this->db->query($sql);
 
