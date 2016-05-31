@@ -27,15 +27,13 @@ class Cobranza extends CI_Controller {
         $where = "";
 
         if (!empty($post)) {
-            foreach ($post as $key => $value) {
-                $$key = $value;
-            }
-            $busqueda = new Busqueda();
-            $busqueda->Where('e', 'Turno_IDTurno', $fecha);
-            $where = $busqueda->getWhere();
+            $fechas = explode("-", $post['FecsPago']);
+            $where = "and p.FecPago between '" . FecFormato($fechas[0]) . "' and '" . FecFormato($fechas[1])."'";
         }
-        
-//        $data["empleado"] = $this->catalogo->Empleados($where);
+
+        $data['servicios'] = $this->cobranza->serviciosContratados($IDExp);
+        $data['movimientos'] = $this->cobranza->allMovimientos($IDExp, $where);
+
 //
 //        $lista = new Lista();
 //        $lista->configButtons('IDExp', 'expediente');
@@ -46,9 +44,11 @@ class Cobranza extends CI_Controller {
 //
 //        $data['export_buttons'] = Exportar::buttons();
 //        $this->session->set_userdata('Export', Exportar::run($lista, $data['empleado']));
-        
+
+        $data["add_js"] = array('MainCobranza');
         $this->load->view('common/header');
-        $this->load->view('cobranza/mi_cuenta');
+        $this->load->view('cobranza/mi_cuenta', $data);
+        $this->load->view("modal/cobranza/detalle_pago");
         $this->load->view('common/footer');
     }
 
@@ -70,25 +70,25 @@ class Cobranza extends CI_Controller {
             $busqueda->Where('c', 'IDCuenta', $cuenta);
             $where = $busqueda->getWhere();
         }
-        
+
         $data['cuentas'] = $this->cobranza->cuentas($where);
-        
+
         foreach ($data['cuentas'] as $key => $value) {
             $tmp = $this->cobranza->debe($value['IDExp']);
             $data['cuentas'][$key]['Debe'] = $tmp[0]['Debe'];
         }
-        
+
         $lista = new Lista();
         $lista->configButtons('IDExp', 'expediente');
-        $lista->setThead('No.Cuenta', 'Nom.Estudiante', 'Nom.Tutor','Saldo');
-        $lista->setRealColumns('IDExp', 'NomEstudiante', 'NomTutor','Saldo');
+        $lista->setThead('No.Cuenta', 'Nom.Estudiante', 'Nom.Tutor', 'Saldo');
+        $lista->setRealColumns('IDExp', 'NomEstudiante', 'NomTutor', 'Saldo');
         $lista->setTbody($data['cuentas']);
         $data['table'] = $lista->table();
 
         $data['export_buttons'] = Exportar::btnsPdfPrint();
         $this->session->set_userdata('Export', Exportar::run($lista, $data['cuentas']));
-        
-        $data["add_js"] = array('MainCobranza','Reinscripcion');
+
+        $data["add_js"] = array('MainCobranza', 'Reinscripcion');
         $this->load->view('common/header');
         $this->load->view('cobranza/cuentas', $data);
         $this->load->view("modal/cobranza/pagar");
@@ -99,24 +99,24 @@ class Cobranza extends CI_Controller {
     public function GeneraFechaPago($FrecPago, $Dia) {
         echo GeneraFechaPago($FrecPago, $Dia);
     }
-    
+
     public function pagar() {
         $this->load->view('common/header');
         $this->load->view('cobranza/pagar');
         $this->load->view('common/footer');
     }
-    
+
     public function forma_pago($IDExp) {
-        $where = "ex.IDExp = ".$IDExp;
+        $where = "ex.IDExp = " . $IDExp;
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
-        
+
         $data["add_js"] = array('MainCobranza');
         $this->load->view('common/header');
-        $this->load->view('cobranza/forma_pago',$data);
+        $this->load->view('cobranza/forma_pago', $data);
         $this->load->view("modal/estudiante/wizard_reinscripcion");
         $this->load->view('common/footer');
     }
-    
+
     public function reportes() {
         $this->load->view('common/header');
         $this->load->view('cobranza/reportes');
