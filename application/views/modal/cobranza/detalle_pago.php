@@ -21,20 +21,11 @@
                                             <th>Descuento</th>
                                             <th>Recargo</th>
                                             <th>Subtotal</th>
+                                            <th>IVA</th>
                                             <th>Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td id="No"></td>
-                                            <!--<td id="FecPago"></td>-->
-                                            <td id="Unidad"></td>
-                                            <td id="Nombre"></td>
-                                            <td id="Descuento"></td>
-                                            <td id="Recargo"></td>
-                                            <td id="SubTotal"></td>
-                                            <td id="Total"></td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
