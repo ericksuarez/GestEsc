@@ -18,6 +18,7 @@ class Ajax extends CI_Controller {
         $this->load->model("Estudiante_model", "study");
         $this->load->model("Docente_model", "docente");
         $this->load->model("Pago_model", "pago");
+        $this->load->model("Cobranza_model", "cobranza");
     }
 
     public function getCatTipo() {
@@ -308,10 +309,10 @@ class Ajax extends CI_Controller {
         $post = $this->input->post();
         $html = "";
         $error = "";
-        
+
         $error .= $post["FrecPago"] == "0" ? "La Frecuencia de Pago es obligatoria.<br>" : "";
         $error .= $post["Dia"] == "0" ? "El Dia de Pago es obligatorio." : "";
-        
+
         if ($error != "") {
             $html = '<div class="alert alert-danger alert-dismissible" role="alert" style="box-shadow: 5px 5px 7px #888888;">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -324,7 +325,13 @@ class Ajax extends CI_Controller {
 
         echo $html;
     }
-    
+
+    function detallesPago($IDExp,$IDPago) {
+        header('Content-Type: application/json');
+        $datalles = $this->cobranza->detallesPago($IDExp,$IDPago);
+        echo json_encode($datalles);
+    }
+
     public function getQuery($sql) {
         $query = $this->db->query($sql);
 
