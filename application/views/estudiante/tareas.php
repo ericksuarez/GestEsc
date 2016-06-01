@@ -1,75 +1,87 @@
 <div id="content">
     <div class="container-fluid">
         <h4 class="page-section-heading">Listado de tareas</h4>
-        <div class="media messages-container media-clearfix-xs-min media-grid">
-            <div class="media-left">
+        <div class="row">
+            <div class="col-md-12 panel">
                 <label>Materias:</label>
-                <div class="messages-list">
-                    <div class="panel panel-default">
-                        <ul class="list-group">
-                            <li class="list-group-item active">
-                                <a href="#">
-                                    <div class="media">
-                                        <div class="media-left">
-                                            <img src="<?php echo base_url(); ?>images/woman-6.jpg" width="50" alt="" class="media-object" />
-                                        </div>
-                                        <div class="media-body">
-                                            <span class="date">2-10-2015</span>
-                                            <span class="user">Materia</span>
-                                            <div class="message">Investigacion animales ...</div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="#">
-                                    <div class="media">
-                                        <div class="media-left">
-                                            <img src="<?php echo base_url(); ?>images/woman-6.jpg" height="50" alt="" class="media-object" />
-                                        </div>
-                                        <div class="media-body">
-                                            <span class="date">2-10-2015</span>
-                                            <span class="user">Materia</span>
-                                            <div class="message">Problemas de animales ...</div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </div>
+                <select class="form-control" name="materia" id="materia">
+                    <option value="0">Selecciona una opción</option>
+                    <?php echo getCatOpcionesWhere("CatMateria", "materia", $materia, $where); ?>
+                </select>
+                <br>
             </div>
 
-            <div class="media-body">
+            <div class="col-md-12">
                 <div class="media">
                     <div class="media-body message">
                         <div class="panel panel-default">
-                            <div class="panel-heading panel-heading-white">
-                                <div class="pull-right">
-                                    <label>Fecha de entrega 15-12-2015</label>
-                                </div>
-                                <span class="user">Investigacin de animales carnivoros</span>
-                            </div>
-                            <div class="panel-body">
-                                Descripción de la tarea a realizar
-                                <div class="pull-right">
-                                    <a href="#" class="btn btn-primary btn-sm">
-                                        <i class="fa fa-download floatL t3"></i>
-                                        <span class="hidden-xs floatL l5">
-                                            <b>&nbsp; Descargar tarea</b>
-                                        </span>
-                                        <div class="clear"></div>
-                                    </a>
-                                    <a href="#" class="btn btn-success btn-sm">
-                                        <i class="fa fa-upload floatL t3"></i>
-                                        <span class="hidden-xs floatL l5">
-                                            <b>&nbsp; Entregar tarea</b>
-                                        </span>
-                                        <div class="clear"></div>
-                                    </a>
-                                </div>
-                            </div>
+                            <table id="example" class="table table-bordered table-hover table-condensed v-middle" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Nom.Tarea</th>
+                                        <th>Descripción</th>
+                                        <th>Fec.Entrega</th>
+                                        <th>Ext.Recurso</th>
+                                        <th>Arch.Tarea</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($tareas as $key => $value) { ?>
+                                        <tr>
+                                            <td><?php echo $value["NomTarea"]; ?></td>
+                                            <td><?php echo $value["Descripcion"]; ?></td>
+                                            <td><?php echo FecFormatoView($value["FecEntrega"]); ?></td>
+                                            <td>
+                                                <?php if(!empty($value["PagConsulta"])){ ?>
+                                                <a href="<?php echo $value["PagConsulta"]; ?>" target="_new" class="btn btn-info btn-stroke btn-xs">
+                                                    <i class="fa fa-eye"></i> Ver
+                                                </a>
+                                                <?php }else{?>
+                                                <?php echo $value["PagConsulta"]; ?>
+                                                <?php }?>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                $FileTarea = $this->tarea->getArchivoTarea(
+                                                    $value["IDTareas"],
+                                                    $materia,
+                                                    $estudiante[0]['IDEstudiante'],
+                                                    $value["Periodo_IDPeriodo"]
+                                                    );
+                                                if($FileTarea != 'N/A'){ ?>
+                                                <a href="<?php echo $FileTarea; ?>" target="_new" class="btn btn-info btn-stroke btn-xs">
+                                                    <i class="fa fa-eye"></i> Ver
+                                                </a>
+                                                <?php }else{?>
+                                                <?php echo $FileTarea; ?>
+                                                <?php }?>
+                                            </td>
+                                            <td>
+                                                <?php if (!empty($value["Archivo"])) { ?>
+                                                <a href="<?php echo site_url('estudiante/descarga/'.$materia.'/'.$value["IDTareas"])?>" class="btn btn-primary btn-sm" target="_new">
+                                                        <i class="fa fa-download floatL t3"></i>
+                                                        <span class="hidden-xs floatL l5">
+                                                            <b>&nbsp; Descargar</b>
+                                                        </span>
+                                                        <div class="clear"></div>
+                                                    </a>
+                                                <?php } ?>
+                                                <?php echo form_open_multipart('estudiante/documentoTarea/' . $estudiante[0]['IDExp'] . '/' . $materia . '/' . $value["IDTareas"]); ?>
+                                                <input type="file" name="userfile[Doc_Tarea][9]" />
+                                                <button class="btn btn-success pull-right" type="submit">
+                                                    <i class="fa fa-save floatL t3"></i>
+                                                    <span class="hidden-xs floatL l5">
+                                                        <b>&nbsp; Guardar</b>
+                                                    </span>
+                                                    <div class="clear"></div>
+                                                </button>
+                                                <?php echo form_close() ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
