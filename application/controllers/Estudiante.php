@@ -18,6 +18,7 @@ class Estudiante extends CI_Controller {
         $this->load->model("ConsultaGral", "gral");
         $this->load->model("Curricular_model", "curricular");
         $this->load->model("Pago_model", "pago");
+        $this->load->model("Tarea_model", "tarea");
     }
 
     public function alta() {
@@ -111,7 +112,7 @@ class Estudiante extends CI_Controller {
             $this->study->Servicios($IDExp, $this->study->getIDEstudianteUsuario(), 1);
             //IDCuenta esta formado por el IDExp,IDUsuario,IDEstudiante
             $post = array(
-                "Cuenta" => str_pad($IDExp.$IDUsuario.$IDEstudiante, 12, "0", STR_PAD_LEFT),
+                "Cuenta" => str_pad($IDExp . $IDUsuario . $IDEstudiante, 12, "0", STR_PAD_LEFT),
                 "IDEstudiante" => $IDEstudiante,
                 "IDTutor" => isset($post["Mtutor"]) ? $IDMadFam : $IDPadFam,
             );
@@ -188,7 +189,7 @@ class Estudiante extends CI_Controller {
     public function calificaciones($IDUsuario = 0) {
         $where = $IDUsuario == 0 ? "u.IdUsuario = " . $this->session->userdata('IdUsuario') : "u.IdUsuario = " . $IDUsuario;
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
-        $data['calificaciones'] = $this->study->getCalificaciones($data['estudiante'][0]['IDEstudiante'],$data['estudiante'][0]['Grado']);
+        $data['calificaciones'] = $this->study->getCalificaciones($data['estudiante'][0]['IDEstudiante'], $data['estudiante'][0]['Grado']);
         $this->load->view('common/header');
         $this->load->view('estudiante/calificaciones', $data);
         $this->load->view('common/footer');
@@ -208,10 +209,10 @@ class Estudiante extends CI_Controller {
     public function kardex($IDUsuario = 0) {
         $where = $IDUsuario == 0 ? "u.IdUsuario = " . $this->session->userdata('IdUsuario') : "u.IdUsuario = " . $IDUsuario;
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
-        
+
         $data['export_buttons'] = Exportar::btnsPdfPrint();
         $this->session->set_userdata('Export', $this->load->view('estudiante/kardex', $data, true));
-        
+
         $this->load->view('common/header');
         $this->load->view('estudiante/kardex', $data);
         $this->load->view('common/footer');
@@ -223,10 +224,56 @@ class Estudiante extends CI_Controller {
         $this->load->view('common/footer');
     }
 
-    public function tarea() {
+    public function tarea($IDMateria = "") {
+        $where = "u.IdUsuario = " . $this->session->userdata('IdUsuario');
+        $data['estudiante'] = $this->catalogo->Estudiantes($where);
+        $data["where"] = "where GradoEsc_IDGradoEsc = " . $data['estudiante'][0]['Grado'];
+        $data["tareas"] = array();
+        $data["materia"] = "";
+
+        if ($IDMateria != "") {
+            $data["tareas"] = $this->tarea->getTareasMateria($IDMateria);
+            $data["materia"] = $IDMateria;
+        }
+
+        $data["add_js"] = array('MainEstudianteTarea');
         $this->load->view('common/header');
-        $this->load->view('estudiante/tareas');
+        $this->load->view('estudiante/tareas', $data);
         $this->load->view('common/footer');
+    }
+    
+    public function documentoTarea($IDExp,$IDMateria,$IDTareas) {
+        $this->load->library('Upload_TipoDocs');
+
+        $where = "u.IdUsuario = " . $this->session->userdata('IdUsuario');
+        $data['estudiante'] = $this->catalogo->Estudiantes($where);
+        $info = $this->tarea->getTareasMateria($IDMateria,$IDTareas);
+        
+        $post = array(
+            "IDTareas" => $IDTareas,
+            "IDMateria" => $IDMateria,
+            "IDDocente" => $info[0]['Docente_IDDocente'],
+            "IDEstudiante" => $data['estudiante'][0]["IDEstudiante"],
+            "IDPeriodo" => $info[0]['Periodo_IDPeriodo'],
+            "FecEntregada" => date('Y-m-d H:i:s'),
+            "Calificacion" => 0,
+            "Archivo" => ""
+        );
+        
+        $data = $this->upload_tipodocs->cargarTarea($IDExp,$post);
+
+        if (is_array($data)) {
+            $this->session->set_flashdata('error', 'Se produjo un error al subir los documentos!!!<br>' . $data);
+            redirect('estudiante/tarea/');
+        } else {
+            $this->session->set_flashdata('exito', 'La tarea se subieron con éxito.');
+            redirect('estudiante/tarea/');
+        }
+    }
+    
+    public function descarga($IDMateria,$IDTarea) {
+        $this->load->library('Upload_TipoDocs');
+        $this->upload_tipodocs->descargaTarea($IDMateria,$IDTarea);
     }
 
     public function nota() {
@@ -238,37 +285,6 @@ class Estudiante extends CI_Controller {
     public function evaluacion_docente() {
         $post = $this->input->post();
         $where = "";
-        $data["where"] = '';
-
-        if (!empty($post)) {
-            foreach ($post as $key => $value) {
-                $$key = $value;
-            }
-            if (isset($nombre)) {
-                $busqueda = new Busqueda();
-                $busqueda->WhereFullText("e", array('Nombre', 'APaterno', 'AMaterno'), $nombre);
-                if (isset($turno)) {
-                    $busqueda->Where('e', 'Turno_IDTurno', $turno);
-                }
-                $where = $busqueda->getWhere();
-            }
-            if (isset($grupo)) {
-                $data["where"] = 'where GradoEsc_IDGradoEsc = ' . $grupo;
-            }
-            if (isset($Materias)) {
-                foreach ($Materias as $key => $value) {
-                    $ExisteMateria = $this->docente->ExisteMateria($IDDocente, $value);
-                    if ($ExisteMateria) {
-                        $this->docente->UpdMateria($post, $IDDocente, $value);
-                    } else {
-                        $this->docente->setIDDocente($IDDocente);
-                        $this->docente->InsMateria($post, $value);
-                    }
-                }
-                $this->session->set_flashdata('exito', 'Las Materias se cargaron correctamente.');
-                redirect(current_url());
-            }
-        }
         $data["docente"] = $this->catalogo->Docentes($where);
 
         $data["add_js"] = array('MainEvaDocente');
