@@ -180,15 +180,12 @@ class Mantenimiento extends CI_Controller {
         $crud = new grocery_CRUD();
         $crud->set_table('tipodocumento');
         $crud->set_subject('Tipo de Documento');
-//            $crud->columns('IDTipoDoc', 'NomDoc','Activo','RutaDoc','EsUpload');
+        $crud->columns('NomDoc','Activo','EsUpload');
         $crud->display_as('NomDoc', 'Nombre Documento')
-                ->display_as('RutaDoc', 'Ruta Documento')
                 ->display_as('EsUpload', 'Cargado por Usuario');
 
-        $crud->fields('NomDoc', 'Activo', 'RutaDoc', 'EsUpload');
-        $crud->required_fields('NomDoc', 'Activo', 'RutaDoc', 'EsUpload');
-
-        $crud->set_field_upload('RutaDoc', 'assets/uploads/files');
+        $crud->fields('NomDoc', 'Activo', 'EsUpload');
+        $crud->required_fields('NomDoc', 'Activo','EsUpload');
 
         $output = $crud->render();
         $this->_example_output($output);
