@@ -115,6 +115,15 @@ class Tarea_model extends CI_Model {
         return $archivo;
     }
 
+    public function notas($IDMateria,$IDGrado) {
+        $sql = "SELECT * FROM notas as n
+                left join materia as m on m.IDMateria=n.Materia_IDMateria
+                left join grado_escolar as ge on ge.IDGradoEsc=n.Grado_IDGrado
+                WHERE n.Materia_IDMateria= ".$IDMateria." and n.Grado_IDGrado= ".$IDGrado."
+                order by n.Titulo";
+        return $this->getQuery($sql);
+    }
+    
     public function getQuery($sql) {
         $query = $this->db->query($sql);
 
