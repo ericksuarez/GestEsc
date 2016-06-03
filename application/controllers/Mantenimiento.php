@@ -10,6 +10,7 @@ class Mantenimiento extends CI_Controller {
         $this->load->database();
         $this->load->helper('url');
         $this->load->library('grocery_CRUD');
+        $this->load->model("Catalogo_model", "catalogo");
     }
 
     public function index() {
@@ -76,21 +77,21 @@ class Mantenimiento extends CI_Controller {
         $crud->columns('IDGrado', 'Grado', 'Grupo');
         $crud->set_relation('Grado', 'grado_escolar', 'Descripcion');
         $crud->display_as('IDGrado', '# ')
-             ->display_as('GradoEsc', 'Grado Esc.');
+                ->display_as('GradoEsc', 'Grado Esc.');
 
         $crud->required_fields('Grado', 'Grupo');
 
         $output = $crud->render();
         $this->_example_output($output);
     }
-    
+
     public function grado_escolar() {
         $crud = new grocery_CRUD();
         $crud->set_table('grado_escolar');
         $crud->set_subject('Grados Escolares');
         $crud->columns('IDGradoEsc', 'GradoEsc', 'Descripcion');
         $crud->display_as('IDGradoEsc', '# ')
-             ->display_as('GradoEsc', 'Grado Esc. ');
+                ->display_as('GradoEsc', 'Grado Esc. ');
 
         $crud->fields('GradoEsc', 'Descripcion');
         $crud->required_fields('GradoEsc');
@@ -109,7 +110,7 @@ class Mantenimiento extends CI_Controller {
                 ->display_as('EsExtra', 'Extra Clase')
                 ->display_as('GradoEsc_IDGradoEsc', 'Grado');
 
-        $crud->required_fields('Nombre', 'EsExtra','GradoEsc_IDGradoEsc');
+        $crud->required_fields('Nombre', 'EsExtra', 'GradoEsc_IDGradoEsc');
 
         $output = $crud->render();
         $this->_example_output($output);
@@ -149,10 +150,10 @@ class Mantenimiento extends CI_Controller {
         $crud->set_subject('Turno');
         $crud->columns('IDTurno', 'Descripcion', 'HoraInicioClases', 'HoraFinClases', 'DuracionClase', 'Estatus');
         $crud->display_as('IDTurno', 'Clave Periodo')
-             ->display_as('HoraInicioClases', 'Hora de Entrada')
-             ->display_as('HoraFinClases', 'Hora de Salida')
-             ->display_as('DuracionClase', 'Tiempo de Clase');
-        
+                ->display_as('HoraInicioClases', 'Hora de Entrada')
+                ->display_as('HoraFinClases', 'Hora de Salida')
+                ->display_as('DuracionClase', 'Tiempo de Clase');
+
         $crud->required_fields('Descripcion', 'Estatus', 'HoraInicoClases', 'HoraFinClases', 'DuracionClase');
 
         $output = $crud->render();
@@ -180,12 +181,12 @@ class Mantenimiento extends CI_Controller {
         $crud = new grocery_CRUD();
         $crud->set_table('tipodocumento');
         $crud->set_subject('Tipo de Documento');
-        $crud->columns('NomDoc','Activo','EsUpload');
+        $crud->columns('NomDoc', 'Activo', 'EsUpload');
         $crud->display_as('NomDoc', 'Nombre Documento')
                 ->display_as('EsUpload', 'Cargado por Usuario');
 
         $crud->fields('NomDoc', 'Activo', 'EsUpload');
-        $crud->required_fields('NomDoc', 'Activo','EsUpload');
+        $crud->required_fields('NomDoc', 'Activo', 'EsUpload');
 
         $output = $crud->render();
         $this->_example_output($output);
@@ -220,17 +221,17 @@ class Mantenimiento extends CI_Controller {
         $output = $crud->render();
         $this->_example_output($output);
     }
-    
+
     public function documento_usuario() {
         $crud = new grocery_CRUD();
         $crud->set_table('tipousuario_has_tipodocumento');
         $crud->set_subject('Documentos por Usuario');
-        $crud->columns('TipoUsuario_IDTipoUsuario', 'TipoDocumento_IDTipoDoc','EsComprobante');
+        $crud->columns('TipoUsuario_IDTipoUsuario', 'TipoDocumento_IDTipoDoc', 'EsComprobante');
         $crud->set_relation('TipoUsuario_IDTipoUsuario', 'tipousuario', 'Descripcion');
         $crud->set_relation('TipoDocumento_IDTipoDoc', 'tipodocumento', 'NomDoc');
         $crud->display_as('TipoUsuario_IDTipoUsuario', 'Perfil')
-             ->display_as('TipoDocumento_IDTipoDoc', 'Nom. Documento')
-             ->display_as('EsComprobante', 'Comprobante');
+                ->display_as('TipoDocumento_IDTipoDoc', 'Nom. Documento')
+                ->display_as('EsComprobante', 'Comprobante');
 
         $crud->required_fields('TipoDocumento_IDTipoDoc', 'EsComprobante');
 
@@ -238,5 +239,43 @@ class Mantenimiento extends CI_Controller {
         $this->_example_output($output);
     }
 
+    public function notas($IDMateria = 0) {
+        $crud = new grocery_CRUD();
+        $where = "u.IdUsuario = " . $this->session->userdata('IdUsuario');
+        $data['estudiante'] = $this->catalogo->Estudiantes($where);
+        $data["tareas"] = array();
+        $data["materia"] = "";
+        $where_grado = array();
+
+        if (!empty($data['estudiante'])) {
+            $data["where"] = "where GradoEsc_IDGradoEsc = " . $data['estudiante'][0]['Grado'];
+            $grado = $data['estudiante'][0]['Grado'];
+            $crud->unset_operations();
+            $where_grado = array('GradoEsc_IDGradoEsc' => $grado);
+        }
+
+        if ($IDMateria > 0) {
+            $data["materia"] = $IDMateria;
+            $crud->where('Materia_IDMateria', $IDMateria);
+        }
+        
+        $crud->set_table('notas');
+        $crud->set_subject('Notas de las Materias');
+        $crud->columns('IDNota', 'Materia_IDMateria', 'Grado_IDGrado', 'Titulo', 'Archivo');
+        $crud->set_relation('Grado_IDGrado', 'grado_escolar', 'Descripcion');
+        $crud->set_relation('Materia_IDMateria', 'materia', 'Nombre', $where_grado);
+        $crud->display_as('Grado_IDGrado', 'Grado')
+                ->display_as('IDNota', '#')
+                ->display_as('Materia_IDMateria', 'Materia');
+
+        $crud->required_fields('Materia_IDMateria', 'Grado_IDGrado', 'Titulo', 'Archivo');
+        $crud->set_field_upload('Archivo', 'assets/uploads/files/Notas');
+
+        $output = $crud->render();
+        array_push($output->js_files, base_url() . "ajax/MainEstudianteTarea.js");
+        $this->load->view('common/header.php');
+        $this->load->view('estudiante/consulta_notas', $data);
+        $this->load->view('example.php', $output);
+    }
 
 }
