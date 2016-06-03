@@ -66,7 +66,7 @@
                             <a href="#submenu"><i class="fa fa-search"></i> <span>Consultar</span></a>
                             <ul id="submenu">
                                 <li><a href="<?php echo site_url('estudiante/tarea'); ?>"><i class="fa fa-book"></i> <span>Tareas</span></a></li>
-                                <li><a href="<?php echo site_url('estudiante/nota'); ?>"><i class="fa fa-bookmark"></i> <span>Notas</span></a></li>
+                                <li><a href="<?php echo site_url('mantenimiento/notas'); ?>"><i class="fa fa-bookmark"></i> <span>Notas</span></a></li>
                             </ul>
                         </li>
                     </ul>
