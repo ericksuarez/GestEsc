@@ -275,10 +275,27 @@ class Estudiante extends CI_Controller {
         $this->load->library('Upload_TipoDocs');
         $this->upload_tipodocs->descargaTarea($IDMateria,$IDTarea);
     }
+    
+    public function descargaCRUD($Archivo) {
+        $this->load->library('Upload_TipoDocs');
+        $this->upload_tipodocs->descarga($Archivo);
+    }
 
-    public function nota() {
+    public function nota($IDMateria = "") {
+        $where = "u.IdUsuario = " . $this->session->userdata('IdUsuario');
+        $data['estudiante'] = $this->catalogo->Estudiantes($where);
+        $data["where"] = "where GradoEsc_IDGradoEsc = " . $data['estudiante'][0]['Grado'];
+        $data["tareas"] = array();
+        $data["materia"] = "";
+
+        if ($IDMateria != "") {
+            $data["tareas"] = $this->tarea->notas($IDMateria,$data['estudiante'][0]['Grado']);
+            $data["materia"] = $IDMateria;
+        }
+
+        $data["add_js"] = array('MainEstudianteTarea');
         $this->load->view('common/header');
-        $this->load->view('estudiante/consulta_notas');
+        $this->load->view('estudiante/consulta_notas',$data);
         $this->load->view('common/footer');
     }
 
