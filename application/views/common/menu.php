@@ -76,13 +76,13 @@
                         <li class="hasSubmenu">
                             <a href="#submenu"><i class="fa fa-graduation-cap"></i> <span>Académico</span></a>
                             <ul id="submenu">
-                                <li><a href="<?php echo site_url('estudiante/tareas'); ?>"><i class="fa fa-book"></i> <span>Tareas</span></a></li>
-                                <li><a href="<?php echo site_url('estudiante/notas'); ?>"><i class="fa fa-bookmark"></i> <span>Notas</span></a></li>
-                                <li><a href="<?php echo site_url('estudiante/calificaciones'); ?>"><i class="fa fa-pencil"></i> <span>Acentar Calificación</span></a></li>
+                                <li><a href="<?php echo site_url('mantenimiento/tareas'); ?>"><i class="fa fa-book"></i> <span>Tareas</span></a></li>
+                                <li><a href="<?php echo site_url('mantenimiento/notas'); ?>"><i class="fa fa-bookmark"></i> <span>Notas</span></a></li>
+                                <li><a href="<?php echo site_url('mantenimiento/evaluacion_continua'); ?>"><i class="fa fa-pencil"></i> <span>Calificar</span></a></li>
                             </ul>
-                        <li><a href="<?php echo site_url('estudiante/horario'); ?>"><i class="fa fa-bookmark"></i> <span>Horario</span></a></li>
-                        <li><a href="<?php echo site_url('estudiante/citatorio'); ?>"><i class="fa fa-bookmark"></i> <span>Enviar Citatorio</span></a></li>
-                        <li><a href="<?php echo site_url('estudiante/mi_evaluacion'); ?>"><i class="fa fa-bookmark"></i> <span>Consulta Evaluación</span></a></li>
+                        <li><a href="<?php echo site_url('docente/horario'); ?>"><i class="fa fa-bookmark"></i> <span>Horario</span></a></li>
+                        <li><a href="<?php echo site_url('docente/citatorio'); ?>"><i class="fa fa-bookmark"></i> <span>Enviar Citatorio</span></a></li>
+                        <li><a href="<?php echo site_url('docente/mi_evaluacion'); ?>"><i class="fa fa-bookmark"></i> <span>Consulta Evaluación</span></a></li>
                         </li>
                     </ul>
                     <!-- MENU PARA LOS PADRES -->
