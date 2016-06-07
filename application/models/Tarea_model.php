@@ -91,6 +91,8 @@ class Tarea_model extends CI_Model {
         $IDTarea = $IDTareas == 0 ? "" : "and t.IDTareas = " . $IDTareas;
         $sql = "SELECT *  FROM tareas as t
                 LEFT JOIN recursotarea as rt on rt.Tareas_IDTareas=t.IDTareas
+                left join materia as m on m.IDMateria=t.Materia_IDMateria
+                left join grado as g on g.IDGrado=m.GradoEsc_IDGradoEsc
                 WHERE t.Materia_IDMateria = " . $IDMateria . " " . $IDTarea . "
                 order by t.FecEntrega asc";
         return $this->getQuery($sql);
