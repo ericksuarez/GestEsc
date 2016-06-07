@@ -11,6 +11,8 @@ class Mantenimiento extends CI_Controller {
         $this->load->helper('url');
         $this->load->library('grocery_CRUD');
         $this->load->model("Catalogo_model", "catalogo");
+        $this->load->model("Docente_model", "docente");
+        $this->load->model("Tarea_model", "tarea");
     }
 
     public function index() {
@@ -258,7 +260,7 @@ class Mantenimiento extends CI_Controller {
             $data["materia"] = $IDMateria;
             $crud->where('Materia_IDMateria', $IDMateria);
         }
-        
+
         $crud->set_table('notas');
         $crud->set_subject('Notas de las Materias');
         $crud->columns('IDNota', 'Materia_IDMateria', 'Grado_IDGrado', 'Titulo', 'Archivo');
@@ -269,13 +271,142 @@ class Mantenimiento extends CI_Controller {
                 ->display_as('Materia_IDMateria', 'Materia');
 
         $crud->required_fields('Materia_IDMateria', 'Grado_IDGrado', 'Titulo', 'Archivo');
-        $crud->set_field_upload('Archivo', 'assets/uploads/files/Notas');
+        $crud->set_field_upload('Archivo', $this->config->item('RutaNota'));
 
         $output = $crud->render();
         array_push($output->js_files, base_url() . "ajax/MainEstudianteTarea.js");
         $this->load->view('common/header.php');
         $this->load->view('estudiante/consulta_notas', $data);
         $this->load->view('example.php', $output);
+    }
+
+    public function tareas($IDMateria = 0) {
+        $crud = new grocery_CRUD();
+        $where = "u.IdUsuario = " . $this->session->userdata('IdUsuario');
+        $docente = $this->catalogo->Docentes($where);
+        $data["materia"] = $this->docente->getMaterias($docente[0]['IDDocente']);
+        $data["IDMateria"] = 0;
+        $where_materia = array();
+
+        if ($IDMateria > 0) {
+            $data["IDMateria"] = $IDMateria;
+            $crud->where('Materia_IDMateria', $IDMateria);
+            $where_materia = array('IDMateria' => $IDMateria);
+        }
+        $crud->set_table('tareas');
+        $crud->set_subject('Tareas para las Materias');
+        $crud->columns('IDTareas', 'Periodo_IDPeriodo', 'NomTarea', 'Descripcion', 'FecEntrega', 'Ext.Recurso');
+        $crud->where('Docente_IDDocente', $docente[0]['IDDocente']);
+        $crud->set_relation('Materia_IDMateria', 'materia', 'Nombre', $where_materia);
+        $crud->set_relation('Periodo_IDPeriodo', 'periodo', 'Descripcion');
+        $crud->set_relation('Docente_IDDocente', 'docente', '{Nombre} {APaterno} {AMaterno}', array('IDDocente' => $docente[0]['IDDocente']));
+        $crud->display_as('IDTareas', '#')
+                ->display_as('Periodo_IDPeriodo', 'Periodo')
+                ->display_as('NomTarea', 'Nom.Tarea')
+                ->display_as('FecEntrega', 'Fecha Entrega')
+                ->display_as('Materia_IDMateria', 'Materia')
+                ->display_as('Docente_IDDocente', 'Docente')
+                ->display_as('Periodo_IDPeriodo', 'Periodo');
+        $crud->required_fields('Materia_IDMateria', 'Docente_IDDocente', 'Periodo_IDPeriodo', 'NomTarea', 'FecEntrega');
+        $crud->callback_column('Ext.Recurso', array($this, '_extraRecurso'));
+        $output = $crud->render();
+        
+        array_push($output->js_files, base_url() . "ajax/MainEstudianteTarea.js");
+        $this->load->view('common/header.php');
+        $this->load->view('docente/tareas', $data);
+        $this->load->view('example.php', $output);
+    }
+
+    function _extraRecurso($primary_key, $row) {
+        return '<a href="' . site_url('mantenimiento/recurso_tarea') . '/' . $row->Materia_IDMateria . '/' . $row->IDTareas . '"
+            class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button">
+                    <span class="ui-button-icon-primary ui-icon ui-icon-folder-open"></span>
+                    <span class="ui-button-text">&nbsp;Cargar</span>
+            </a>';
+    }
+
+    public function recurso_tarea($IDMateria, $IDTareas = 0) {
+
+        $data["tarea"] = $this->tarea->getTareasMateria($IDMateria, $IDTareas);
+
+        $crud = new grocery_CRUD();
+        $crud->set_table('recursotarea');
+        $crud->set_subject('Información extra para la tarea.');
+        $crud->columns('IDRecursoTarea', 'Tareas_IDTareas', 'Archivo', 'PagConsulta');
+        $crud->where('Tareas_IDTareas', $IDTareas);
+        $crud->set_relation('Tareas_IDTareas', 'tareas', 'NomTarea', array('IDTareas' => $IDTareas));
+
+        $crud->display_as('IDRecursoTarea', '#')
+                ->display_as('Tareas_IDTareas', 'Nom.Tarea')
+                ->display_as('PagConsulta', 'Pagina Web');
+
+        $crud->required_fields('Materia_IDMateria', 'Grado_IDGrado', 'Titulo', 'Archivo');
+        $crud->set_field_upload('Archivo', $this->config->item('RutaTarea'));
+
+        $output = $crud->render();
+        $this->load->view('common/header.php');
+        $this->load->view('docente/recurso_tarea', $data);
+        $this->load->view('example.php', $output);
+    }
+
+    public function evaluacion_continua() {
+        $crud = new grocery_CRUD();
+        $post = $this->input->post();
+        $where = "u.IdUsuario = " . $this->session->userdata('IdUsuario');
+
+        $data['docente'] = $this->catalogo->Docentes($where);
+        $data['materias'] = $this->docente->getMaterias($data['docente'][0]['IDDocente']);
+        $data['grupos'] = $this->docente->getGrupos($data['docente'][0]['IDDocente']);
+        $data["IDMateria"] = 0;
+        $data["where_tarea"] = "where Docente_IDDocente = " . $data['docente'][0]['IDDocente'];
+        $where_materia = array();
+
+        if (!empty($post)) {
+            if (!empty($post['Materia'])) {
+                $where_materia = array('IDMateria' => $post['Materia']);
+                $data["IDMateria"] = 0;
+                $crud->where('evaluacioncont.Materia_IDMateria', $post['Materia']);
+            }
+        }
+
+        $crud->set_table('evaluacioncont');
+        $crud->set_subject('Evaluación Continua');
+        $crud->columns('Estudiante_IDEstudiante', 'Tareas_IDTareas', 'Calificacion', 'FecEntregada','Doc.Tarea');
+        $crud->where('evaluacioncont.Docente_IDDocente', $data['docente'][0]['IDDocente']);
+        $crud->set_relation('Tareas_IDTareas', 'tareas', 'NomTarea');
+        $crud->set_relation('Materia_IDMateria', 'materia', 'Nombre', $where_materia);
+        $crud->set_relation('Docente_IDDocente', 'docente', '{Nombre} {APaterno} {AMaterno}', 
+                            array('IDDocente' => $data['docente'][0]['IDDocente']));
+        $crud->set_relation('Periodo_IDPeriodo', 'periodo', 'Descripcion');
+        $crud->set_relation('Estudiante_IDEstudiante', 'estudiante', '{Nombre} {APaterno} {AMaterno}');
+
+        $crud->display_as('IDEvalCont', '#')
+                ->display_as('Tareas_IDTareas', 'Nom.Tarea')
+                ->display_as('Materia_IDMateria', 'Materia')
+                ->display_as('Docente_IDDocente', 'Docente')
+                ->display_as('Periodo_IDPeriodo', 'Periodo')
+                ->display_as('Estudiante_IDEstudiante', 'Alumno')
+                ->display_as('FecEntregada', 'Fecha Entregada');
+
+        $crud->required_fields('Calificacion', 'FecEntregada');
+        $crud->callback_column('Doc.Tarea', array($this, '_verDocTarea'));
+        $crud->edit_fields('Calificacion', 'FecEntregada');
+        
+        $crud->unset_read();
+        $crud->unset_delete();
+
+        $output = $crud->render();
+        $this->load->view('common/header.php');
+        $this->load->view('docente/acentar_calificaciones', $data);
+        $this->load->view('example.php', $output);
+    }
+    
+    function _verDocTarea($primary_key, $row) {
+        return '<a href="'.$row->Archivo.'" target="_new"
+            class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button">
+                    <span class="ui-button-icon-primary ui-icon ui-icon-document"></span>
+                    <span class="ui-button-text">&nbsp;Leer</span>
+            </a>';
     }
 
 }
