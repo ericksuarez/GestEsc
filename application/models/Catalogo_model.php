@@ -123,6 +123,11 @@ class Catalogo_model extends CI_Model {
         return $this->getQuery($sql);
     }
     
+    public function CatTareas($where = '') {
+        $sql = "select IDTareas as 'index',NomTarea as opcion from tareas ".$where;
+        return $this->getQuery($sql);
+    }
+    
     public function getQuery($sql) {
         $query = $this->db->query($sql);
 
