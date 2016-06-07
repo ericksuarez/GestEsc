@@ -264,10 +264,10 @@ class Estudiante extends CI_Controller {
 
         if (is_array($data)) {
             $this->session->set_flashdata('error', 'Se produjo un error al subir los documentos!!!<br>' . $data);
-            redirect('estudiante/tarea/');
+            redirect('estudiante/tarea/'.$IDMateria);
         } else {
             $this->session->set_flashdata('exito', 'La tarea se subieron con éxito.');
-            redirect('estudiante/tarea/');
+            redirect('estudiante/tarea/'.$IDMateria);
         }
     }
     
@@ -276,9 +276,9 @@ class Estudiante extends CI_Controller {
         $this->upload_tipodocs->descargaTarea($IDMateria,$IDTarea);
     }
     
-    public function descargaCRUD($Archivo) {
+    public function defautlDescarga($IDTareas, $materia, $IDEstudiante, $IDPeriodo) {
         $this->load->library('Upload_TipoDocs');
-        $this->upload_tipodocs->descarga($Archivo);
+        $this->upload_tipodocs->defautlDescarga($IDTareas, $materia, $IDEstudiante, $IDPeriodo);
     }
 
     public function nota($IDMateria = "") {
