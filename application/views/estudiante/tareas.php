@@ -21,8 +21,9 @@
                                         <th>Nom.Tarea</th>
                                         <th>Descripción</th>
                                         <th>Fec.Entrega</th>
-                                        <th>Ext.Recurso</th>
-                                        <th>Arch.Tarea</th>
+                                        <th>Archivo</th>
+                                        <th>Pagina Web</th>
+                                        <th>Tarea Enviada</th>
                                         <th>Acción</th>
                                     </tr>
                                 </thead>
@@ -33,41 +34,45 @@
                                             <td><?php echo $value["Descripcion"]; ?></td>
                                             <td><?php echo FecFormatoView($value["FecEntrega"]); ?></td>
                                             <td>
-                                                <?php if(!empty($value["PagConsulta"])){ ?>
-                                                <a href="<?php echo $value["PagConsulta"]; ?>" target="_new" class="btn btn-info btn-stroke btn-xs">
-                                                    <i class="fa fa-eye"></i> Ver
-                                                </a>
-                                                <?php }else{?>
-                                                <?php echo $value["PagConsulta"]; ?>
-                                                <?php }?>
+                                                <?php if (!empty($value["Archivo"])) { ?>
+                                                    <a href="<?php echo base_url() . $this->config->item('RutaTarea') . '/' . $value["Archivo"]; ?>" target="_new" class="btn btn-info btn-stroke btn-circle btn-xs">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                    <a href="<?php echo site_url('estudiante/descarga/' . $materia . '/' . $value["IDTareas"]) ?>" 
+                                                       target="_new" class="btn btn-primary btn-stroke btn-circle btn-xs">
+                                                        <i class="fa fa-download"></i>
+                                                    </a>
+                                                <?php } ?>
+                                            </td>
+                                            <td>
+                                                <?php if (!empty($value["PagConsulta"])) { ?>
+                                                    <a href="<?php echo $value["PagConsulta"]; ?>" target="_new" class="btn btn-info btn-stroke btn-circle btn-xs">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                <?php } else { ?>
+                                                    <?php echo $value["PagConsulta"]; ?>
+                                                <?php } ?>
                                             </td>
                                             <td>
                                                 <?php
                                                 $FileTarea = $this->tarea->getArchivoTarea(
-                                                    $value["IDTareas"],
-                                                    $materia,
-                                                    $estudiante[0]['IDEstudiante'],
-                                                    $value["Periodo_IDPeriodo"]
-                                                    );
-                                                if($FileTarea != 'N/A'){ ?>
-                                                <a href="<?php echo $FileTarea; ?>" target="_new" class="btn btn-info btn-stroke btn-xs">
-                                                    <i class="fa fa-eye"></i> Ver
-                                                </a>
-                                                <?php }else{?>
-                                                <?php echo $FileTarea; ?>
-                                                <?php }?>
+                                                        $value["IDTareas"], $materia, $estudiante[0]['IDEstudiante'], $value["Periodo_IDPeriodo"]
+                                                );
+                                                if (!empty($FileTarea)) {
+                                                    ?>
+                                                    <a href="<?php echo $FileTarea; ?>" target="_new" class="btn btn-info btn-stroke btn-circle btn-xs">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                    <a href="<?php echo site_url('estudiante/defautlDescarga/' . $value["IDTareas"].'/'.$materia.'/'.$estudiante[0]['IDEstudiante'].'/'.$value["Periodo_IDPeriodo"]) ?>" 
+                                                       target="_new" class="btn btn-primary btn-stroke btn-circle btn-xs">
+                                                        <i class="fa fa-download"></i>
+                                                    </a>
+    <?php } else { ?>
+                                                    <?php echo $FileTarea; ?>
+                                                <?php } ?>
                                             </td>
                                             <td>
-                                                <?php if (!empty($value["Archivo"])) { ?>
-                                                <a href="<?php echo site_url('estudiante/descarga/'.$materia.'/'.$value["IDTareas"])?>" class="btn btn-primary btn-sm" target="_new">
-                                                        <i class="fa fa-download floatL t3"></i>
-                                                        <span class="hidden-xs floatL l5">
-                                                            <b>&nbsp; Descargar</b>
-                                                        </span>
-                                                        <div class="clear"></div>
-                                                    </a>
-                                                <?php } ?>
-                                                <?php echo form_open_multipart('estudiante/documentoTarea/' . $estudiante[0]['IDExp'] . '/' . $materia . '/' . $value["IDTareas"]); ?>
+    <?php echo form_open_multipart('estudiante/documentoTarea/' . $estudiante[0]['IDExp'] . '/' . $materia . '/' . $value["IDTareas"]); ?>
                                                 <input type="file" name="userfile[Doc_Tarea][9]" />
                                                 <button class="btn btn-success pull-right" type="submit">
                                                     <i class="fa fa-save floatL t3"></i>
@@ -76,10 +81,10 @@
                                                     </span>
                                                     <div class="clear"></div>
                                                 </button>
-                                                <?php echo form_close() ?>
+    <?php echo form_close() ?>
                                             </td>
                                         </tr>
-                                    <?php } ?>
+<?php } ?>
                                 </tbody>
                             </table>
                         </div>
