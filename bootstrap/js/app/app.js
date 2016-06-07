@@ -16,7 +16,12 @@ window.initGoogleMaps = require('maps/js/google/main');
 
 // CORE
 require('./main');
-},{"./main":"/app/www/src/js/themes/real-estate/main.js","essential/js/main":"/app/www/lib/essential/js/main.js","layout/js/main":"/app/www/lib/layout/js/main.js","maps/js/google/main":"/app/www/lib/maps/js/google/main.js","media/js/carousel/main":"/app/www/lib/media/js/carousel/main.js","sidebar/js/main":"/app/www/lib/sidebar/js/main.js"}],"/app/www/lib/essential/js/_bootstrap-carousel.js":[function(require,module,exports){
+},{"./main":"/app/www/src/js/themes/real-estate/main.js",
+"essential/js/main":"/app/www/lib/essential/js/main.js",
+"layout/js/main":"/app/www/lib/layout/js/main.js",
+"maps/js/google/main":"/app/www/lib/maps/js/google/main.js",
+"media/js/carousel/main":"/app/www/lib/media/js/carousel/main.js",
+"sidebar/js/main":"/app/www/lib/sidebar/js/main.js"}],"/app/www/lib/essential/js/_bootstrap-carousel.js":[function(require,module,exports){
 (function ($) {
     "use strict";
 
