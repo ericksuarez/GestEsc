@@ -189,5 +189,24 @@ class Docente extends CI_Controller {
         $this->form_validation->set_message('Materia', 'El campo Materias es requerido' . $post_string);
         return $post_string == '' ? FALSE : TRUE;
     }
+  
+//    SIN USO EN EL SISTEMA
+    public function tareas($IDMateria = 0) {
+        $where = "u.IdUsuario = " . $this->session->userdata('IdUsuario');
+        $docente = $this->catalogo->Docentes($where);
+        $data["materia"] = $this->docente->getMateriasDocente($docente[0]['IDDocente']);
+        $data["tareas"] = array();
+        $data["materia"] = "";
+
+        if ($IDMateria > 0) {
+            $data["tareas"] = $this->tarea->getTareasMateria($IDMateria);
+            $data["materia"] = $IDMateria;
+        }
+        
+        $data["add_js"] = array("ajax/MainEstudianteTarea.js");
+        $this->load->view('common/header.php');
+        $this->load->view('docente/tareas', $data);
+        $this->load->view('common/footer');
+    }
 
 }
