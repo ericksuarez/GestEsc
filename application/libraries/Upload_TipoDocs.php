@@ -82,7 +82,7 @@ class Upload_TipoDocs {
     private function loadConfig($IDExp) {
         $config['upload_path'] = $this->getRutaGuardaArchivo() . '/Exp_' . $IDExp . '/';
 //        $config['allowed_types'] = 'gif|jpg|png|tif|pdf';
-        $config['allowed_types'] = 'pdf';
+        $config['allowed_types'] = 'gif|jpg|png|tif|pdf|doc';
         $config['max_size'] = '2048';
         $config['max_width'] = '2048';
         $config['max_height'] = '2048';
@@ -92,7 +92,7 @@ class Upload_TipoDocs {
 
     private function loadConfigTarea($IDExp, $IDMateria) {
         $config['upload_path'] = $this->getRutaGuardaArchivo() . '/Exp_' . $IDExp . '/Tareas/' . $IDMateria;
-        $config['allowed_types'] = 'gif|jpg|png|tif|pdf|doc|docx';
+        $config['allowed_types'] = 'gif|jpg|png|tif|pdf|doc';
         $config['max_size'] = '2048';
         $config['max_width'] = '2048';
         $config['max_height'] = '2048';
@@ -124,7 +124,7 @@ class Upload_TipoDocs {
                 } else {
                     $data = array('upload_data' => $this->CI->upload->data());
                     $info = $this->CI->catalogo->getTipoDoc($value);
-                    $full_path = base_url() . str_replace('./', '', $this->getRutaGuardaArchivo()) . 'Exp_' . $IDExp . '/' . $_FILES["userfile"]["name"];
+                    $full_path = base_url() . str_replace('./', '', $this->getRutaGuardaArchivo()) . 'Exp_' . $IDExp . '/Tareas/' . $post['IDMateria'] .'/'. str_replace(' ','_',$_FILES["userfile"]["name"]);
                     $post['Archivo'] = $full_path;
                     $this->CI->tarea->InsUpdTareaEvaCont($post, $full_path);
                     return true;
@@ -146,7 +146,15 @@ class Upload_TipoDocs {
     public function descargaTarea($IDMateria,$IDTarea) {
         $info = $this->CI->tarea->getTareasMateria($IDMateria, $IDTarea);
         $data = file_get_contents($info[0]['Archivo']); // Read the file's contents
-        $name = str_replace(" ", "_", $info[0]['NomTarea'].".pdf");
+        $name = str_replace(" ", "_", $info[0]['NomTarea'].substr($info[0]['Archivo'],(strlen($info[0]['Archivo']-5)),(strlen($info[0]['Archivo'])-1)));
+        force_download($name, $data);
+    }
+    
+    public function defautlDescarga($IDTareas, $materia, $IDEstudiante, $IDPeriodo) {
+        $Archivo = $this->CI->tarea->getArchivoTarea($IDTareas, $materia, $IDEstudiante, $IDPeriodo);
+        $tmp = explode('/', $Archivo);
+        $data = file_get_contents($Archivo); // Read the file's contents
+        $name = str_replace(" ", "_", end($tmp));
         force_download($name, $data);
     }
 
