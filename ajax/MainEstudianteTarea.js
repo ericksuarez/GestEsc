@@ -17,6 +17,12 @@ $(document).ready(function () {
         var href = URL + "mantenimiento/notas/";
         window.location.href = href + IDMateria;
     });
+    
+    $('#DocenteTareas').change(function () {
+        var IDMateria = $(this).val();
+        var href = URL + "mantenimiento/tareas/";
+        window.location.href = href + IDMateria;
+    });
 
 
 });
