@@ -10,6 +10,9 @@ if (!defined('BASEPATH'))
 
 class Docente extends CI_Controller {
 
+    var $IDPlantilla;
+    var $IDCitatorio;
+
     public function __construct() {
         parent::__construct();
         $this->load->model("Docente_model", "docente");
@@ -17,6 +20,8 @@ class Docente extends CI_Controller {
         $this->load->model("Catalogo_model", "catalogo");
         $this->load->model("ConsultaGral", "gral");
         $this->load->model("Log_Bitacora_model", "bitacora");
+        $this->load->library('grocery_CRUD');
+        $this->load->library('correo');
     }
 
     public function alta() {
@@ -47,7 +52,7 @@ class Docente extends CI_Controller {
             $materias = $this->docente->getMaterias($value['IDDocente']);
             $grupos = $this->docente->getGrupos($value['IDDocente']);
             foreach ($materias as $k => $val) {
-                $data["docente"][$key]["Materias"] .= '- '.$val['Nombre'] . '.<br>';
+                $data["docente"][$key]["Materias"] .= '- ' . $val['Nombre'] . '.<br>';
             }
             $data["docente"][$key]["Materias"] = substr($data["docente"][$key]["Materias"], 0, -1);
             foreach ($grupos as $k => $va) {
@@ -126,7 +131,7 @@ class Docente extends CI_Controller {
     public function documentos($IDExp) {
 
         $this->load->library('Upload_TipoDocs');
-        
+
         $data = $this->upload_tipodocs->cargar($IDExp);
 
         if (is_array($data)) {
@@ -189,7 +194,7 @@ class Docente extends CI_Controller {
         $this->form_validation->set_message('Materia', 'El campo Materias es requerido' . $post_string);
         return $post_string == '' ? FALSE : TRUE;
     }
-  
+
 //    SIN USO EN EL SISTEMA
     public function tareas($IDMateria = 0) {
         $where = "u.IdUsuario = " . $this->session->userdata('IdUsuario');
@@ -202,11 +207,73 @@ class Docente extends CI_Controller {
             $data["tareas"] = $this->tarea->getTareasMateria($IDMateria);
             $data["materia"] = $IDMateria;
         }
-        
+
         $data["add_js"] = array("ajax/MainEstudianteTarea.js");
         $this->load->view('common/header.php');
         $this->load->view('docente/tareas', $data);
         $this->load->view('common/footer');
+    }
+
+    public function citatorio($IDPlantilla = 0) {
+
+        $data['IDPlantilla'] = $IDPlantilla;
+        $data['plantilla']['Tema'] = '<p><strong><span style="color:#FF0000;"><u>No ha seleccionado ninguna plantilla de correo. Necesita seleccionar una para poder enviar sus correos. Gracias !!!</u></span></strong></p>';
+
+        if ($IDPlantilla > 0) {
+            $data['plantilla'] = $this->gral->getPlantilla($IDPlantilla);
+            $this->IDPlantilla = $IDPlantilla;
+        }
+
+        $crud = new grocery_CRUD();
+        $crud->set_table('adjuntar');
+        $crud->columns('Documento');
+        $crud->where('IDCitatorio',0);
+        $crud->where('IDUsuario',$this->session->userdata('IdUsuario'));
+        $crud->required_fields('Documento');
+        $crud->set_field_upload('Documento', $this->config->item('RutaAdjunto'));
+        $crud->add_fields('IDUsuario', 'Documento');
+        $crud->unset_read();
+        $crud->unset_edit();
+        $crud->unset_print();
+        $crud->unset_export();
+        $crud->field_type('IDUsuario', 'hidden', $this->session->userdata('IdUsuario'));
+
+        $data['output'] = $crud->render();
+
+        $data["add_js"] = array(
+            "bootstrap/js/bootstrap.min.js",
+            "assets/grocery_crud/texteditor/ckeditor/ckeditor.js",
+            "ajax/MainSummernote.js",
+            "ajax/MainCitatorio.js",
+        );
+        $this->load->view('common/header.php');
+        $this->load->view('docente/enviar_citatorio', $data);
+        $this->load->view('common/footer_to_crud');
+    }
+
+    function enviar_Citatorio() {
+        $post = $this->input->post();
+        
+        $correo = new Correo();
+        $correo->setPara($post['PARA']);
+        $correo->setCc($post['CC']);
+        $correo->setAsunto($post['Asunto']);
+        $correo->setMensaje($post['editor']);
+        $correo->enviar();
+        echo $correo->getError();
+        
+        $data = array(
+            "IDTipoPlantilla" => $post['plantilla'],
+            "Para" => $post['PARA'],
+            "Cc" => $post['CC'],
+            "Asunto" => $post['Asunto'],
+            "Mensaje" => $post['editor'],
+            "Rechazados" => $correo->getRechazados(),
+            "Enviados" => $correo->getEnviados(),
+            "IDUsuario" => $this->session->userdata('IdUsuario')
+        );
+//        $this->IDCitatorio = $this->gral->InsCitatorio($data);
+        
     }
 
 }
