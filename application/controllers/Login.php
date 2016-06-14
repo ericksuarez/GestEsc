@@ -40,9 +40,10 @@ class Login extends CI_Controller {
                'IDTipoUsuario' => $data['TipoUsuario_IDTipoUsuario'],
                'ClaveUsuario' => $data['ClaveUsuario'],
                'Contrasena' => $data['Contrasena'],
-               'NomUsuario' => $nombre,
+               'NomUsuario' => $nombre['nombre'],
                'SesActiva' => TRUE,
-               'Export' => ""
+               'Export' => "",
+               'IDExp' => isset($nombre['IDExp']) ? $nombre['IDExp'] : "",
             );
             $this->session->set_userdata($usuario_data);
     }
