@@ -36,7 +36,11 @@ class Login_model extends CI_Model {
             $array = $this->getQuery($docente);
         }
         if ($IDTipoUsuario == 3) {
-            $padrefam = "select CONCAT(Nombre,' ',APaterno,' ',AMaterno) as nombre from padresfam as pd where pd.Usuario_IdUsuario = " . $IdUsuario;
+            $padrefam = "select CONCAT(pd.Nombre,' ',pd.APaterno,' ',pd.AMaterno) as nombre,ex.IDExp 
+                        from padresfam as pd 
+                        left join estudiante as es on es.IDEstudiante=pd.Estudiante_IDEstudiante
+                        left join expediente as ex on ex.Usuario_IDUsuario=es.Usuario_IdUsuario
+                        where pd.Usuario_IdUsuario = " . $IdUsuario;
             $array = $this->getQuery($padrefam);
         }
         if ($IDTipoUsuario > 3) {
@@ -44,7 +48,7 @@ class Login_model extends CI_Model {
             $array = $this->getQuery($empleado);
         }
 
-        return $array[0]['nombre'];
+        return $array[0];
     }
 
     public function getQuery($sql) {
