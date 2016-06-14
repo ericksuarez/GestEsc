@@ -2317,7 +2317,8 @@ TableTools.classes = {
 TableTools.classes_themeroller = {
 	"container": "DTTT_container ui-buttonset ui-buttonset-multi",
 	"buttons": {
-		"normal": "DTTT_button ui-button ui-state-default"
+		//"normal": "DTTT_button ui-button ui-state-default"
+		"normal": "btn btn-primary"
 	},
 	"collection": {
 		"container": "DTTT_collection ui-buttonset ui-buttonset-multi"

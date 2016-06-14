@@ -36,14 +36,14 @@ $(document).ready(function() {
 	     });
 	}
 
-//	if(!unset_print)
-//	{
-//		aButtons.push({
-//	         "sExtends":    "print",
-//	         "sButtonText": print_text,
-//	         "mColumns": mColumns
-//	     });
-//	}
+	if(!unset_print)
+	{
+		aButtons.push({
+	         "sExtends":    "print",
+	         "sButtonText": print_text,
+	         "mColumns": mColumns
+	     });
+	}
 
 	//For mutliplegrids disable bStateSave as it is causing many problems
 	if ($('.groceryCrudTable').length > 1) {
