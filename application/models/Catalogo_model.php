@@ -12,7 +12,7 @@ class Catalogo_model extends CI_Model {
     }
 
     public function Estudiantes($where = '') {
-        $where = $where!='' ? 'and ' . $where : $where;
+        $where = $where != '' ? 'and ' . $where : $where;
         $sql = "select *,concat(e.Nombre,' ',e.APaterno,' ',e.AMaterno) as NomCompleto, concat(gr.Grado,' - ',gr.Grupo) as GradoGrupo 
                 from estudiante as e
                 left join usuario as u on u.IdUsuario = e.Usuario_IdUsuario
@@ -41,7 +41,21 @@ class Catalogo_model extends CI_Model {
         $sql = "select *,concat(e.Nombre,' ',e.APaterno,' ',e.AMaterno) as NomCompleto from empleado as e
                 left join usuario as u on u.IdUsuario = e.Usuario_IdUsuario
                 left join expediente as ex on ex.Usuario_IDUsuario = u.IdUsuario
-                where ex.Activo = 1 ". $where;
+                where ex.Activo = 1 " . $where;
+        return $this->getQuery($sql);
+    }
+
+    public function CorreosEstudiantePadresFam($where = '') {
+        $where = !empty($where) ? 'where ' . $where : $where;
+        $sql = "select e.Correo,concat(e.Nombre,' ',e.APaterno,' ',e.AMaterno) as NomCompletoAlumno, 
+                group_concat(concat(pf.Nombre,' ',pf.APaterno,' ',pf.AMaterno),'') as NomCompletoPadres,
+                group_concat(concat(pf.Correo)) as Correos
+                from estudiante as e
+                left join padresfam as pf on pf.Estudiante_IDEstudiante=e.IDEstudiante
+                left join grupo as g on g.Estudiante_IDEstudiante = e.IDEstudiante
+                left join grado as gr on gr.IDGrado = g.Grado_IDGrado
+                ".$where."
+                group by e.IDEstudiante";
         return $this->getQuery($sql);
     }
 
@@ -73,28 +87,28 @@ class Catalogo_model extends CI_Model {
         $sql = "select GradoEsc as 'index',Descripcion as opcion from grado_escolar";
         return $this->getQuery($sql);
     }
-    
+
     public function CatGrado($where = '') {
-        $sql = "select IDGrado as 'index',CONCAT(Grado,' - ',Grupo) as opcion from grado ".$where;
+        $sql = "select IDGrado as 'index',CONCAT(Grado,' - ',Grupo) as opcion from grado " . $where;
         return $this->getQuery($sql);
     }
-    
-    public function CatGradoIndex($index='',$where = '') {
+
+    public function CatGradoIndex($index = '', $where = '') {
         $index = !empty($index) ? $index : 'IDGrado';
-        $sql = "select ".$index." as 'index',CONCAT(Grado,' - ',Grupo) as opcion from grado ".$where;
+        $sql = "select " . $index . " as 'index',CONCAT(Grado,' - ',Grupo) as opcion from grado " . $where;
         return $this->getQuery($sql);
     }
 
     public function CatMateria($where = '') {
-        $sql = "select IDMateria as 'index',Nombre as opcion from materia ".$where;
+        $sql = "select IDMateria as 'index',Nombre as opcion from materia " . $where;
         return $this->getQuery($sql);
     }
-    
-    public function CatDocentesPorMateria($IDTurno,$IDMateria) {
+
+    public function CatDocentesPorMateria($IDTurno, $IDMateria) {
         $sql = "select d.IDDocente as 'index',concat(d.Nombre,' ',d.APaterno,' ',d.AMaterno) as opcion 
                 from docente as d
                 left join docente_has_materia as dm on dm.Docente_IDDocente = d.IDDocente
-                where d.Turno_IDTurno = '".$IDTurno."' and dm.Materia_IDMateria = ".$IDMateria;
+                where d.Turno_IDTurno = '" . $IDTurno . "' and dm.Materia_IDMateria = " . $IDMateria;
         return $this->getQuery($sql);
     }
 
@@ -122,12 +136,17 @@ class Catalogo_model extends CI_Model {
         $sql = "select IDPeriodo as 'index',Descripcion as opcion from periodo";
         return $this->getQuery($sql);
     }
-    
+
     public function CatTareas($where = '') {
-        $sql = "select IDTareas as 'index',NomTarea as opcion from tareas ".$where;
+        $sql = "select IDTareas as 'index',NomTarea as opcion from tareas " . $where;
         return $this->getQuery($sql);
     }
-    
+
+    public function CatTipoPlantilla($where = '') {
+        $sql = "select IDTipoPlantilla as 'index',Descripcion as opcion from  tipo_plantilla " . $where;
+        return $this->getQuery($sql);
+    }
+
     public function getQuery($sql) {
         $query = $this->db->query($sql);
 
