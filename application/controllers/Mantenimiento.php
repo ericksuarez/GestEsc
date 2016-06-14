@@ -13,6 +13,7 @@ class Mantenimiento extends CI_Controller {
         $this->load->model("Catalogo_model", "catalogo");
         $this->load->model("Docente_model", "docente");
         $this->load->model("Tarea_model", "tarea");
+        $this->load->model("ConsultaGral", "gral");
     }
 
     public function index() {
@@ -408,5 +409,20 @@ class Mantenimiento extends CI_Controller {
                     <span class="ui-button-text">&nbsp;Leer</span>
             </a>';
     }
+    
+    public function plantilla_correo() {
+        $crud = new grocery_CRUD();
+        $crud->set_table('plantilla');
+        $crud->set_subject('Plantilla Correos');
+        $crud->columns('IDPlantilla', 'IDTipoPlantilla', 'Descripcion');
+        $crud->set_relation('IDTipoPlantilla', 'tipo_plantilla', 'Descripcion');
+        $crud->display_as('IDPlantilla', '#')
+             ->display_as('IDTipoPlantilla', 'Tipo');
 
+        $crud->required_fields('IDPlantilla', '	IDTipoPlantilla', 'Descripcion');
+        
+        $output = $crud->render();
+        
+        $this->_example_output($output);
+    }
 }
