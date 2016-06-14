@@ -12,6 +12,8 @@
         <link href="<?php echo base_url() ?>font-awesome/css/font-awesome.min.css" rel="stylesheet">
         <link href="<?php echo base_url() ?>bootstrap/css/vendor/all.css" rel="stylesheet">
         <link href="<?php echo base_url() ?>bootstrap/css/app/app.css" rel="stylesheet">
+        <!--summernote-->
+	<link href="<?php echo base_url() ?>bootstrap/summernote/dist/summernote.min.css" rel="stylesheet">
         <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>

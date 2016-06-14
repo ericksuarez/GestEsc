@@ -2,12 +2,6 @@
 </div>
 </div>
 </div>
-<?php
-/*
- * Carga del modal genrico que siempre llama a una vista del catalogo 
- */
-$this->load->view('modal/modal_generico');
-?>
 <!-- Inline Script for colors and config objects; used by various external scripts; -->
 <script>
     var colors = {
@@ -32,21 +26,12 @@ $this->load->view('modal/modal_generico');
         }
     };
 </script>
-
-<script src="<?php echo base_url() ?>bootstrap/js/vendor/all.js"></script>
-<script src="<?php echo base_url() ?>bootstrap/js/app/app.js"></script>
-<script src="<?php echo base_url() ?>printPage/jquery.printPage.js"></script>
-<script src="<?php echo base_url() ?>ajax/Direccion.js"></script>
-<?php if(isset($add_js)){
-foreach($add_js as $k => $js){?>
-<script src="<?php echo base_url() ?><?php echo $js?>"></script>
-<?php }}?>
-<script>
-$(document).ready(function () {
-  $(".btnPrint").printPage();  
-  $('#example').DataTable();
-});
-</script>
+<?php if (isset($add_js)) {
+    foreach ($add_js as $k => $js) {
+        ?>
+        <script src="<?php echo base_url() ?><?php echo $js ?>"></script>
+    <?php }
+} ?>
 </body>
 
 </html>

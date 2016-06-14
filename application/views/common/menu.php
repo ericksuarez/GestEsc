@@ -80,9 +80,9 @@
                                 <li><a href="<?php echo site_url('mantenimiento/notas'); ?>"><i class="fa fa-bookmark"></i> <span>Notas</span></a></li>
                                 <li><a href="<?php echo site_url('mantenimiento/evaluacion_continua'); ?>"><i class="fa fa-pencil"></i> <span>Calificar</span></a></li>
                             </ul>
-                        <li><a href="<?php echo site_url('docente/horario'); ?>"><i class="fa fa-bookmark"></i> <span>Horario</span></a></li>
-                        <li><a href="<?php echo site_url('docente/citatorio'); ?>"><i class="fa fa-bookmark"></i> <span>Enviar Citatorio</span></a></li>
-                        <li><a href="<?php echo site_url('docente/mi_evaluacion'); ?>"><i class="fa fa-bookmark"></i> <span>Consulta Evaluación</span></a></li>
+                        <li><a href="<?php echo site_url('curricular/horario_individual'); ?>"><i class="fa fa-calendar"></i> <span>Horario</span></a></li>
+                        <li><a href="<?php echo site_url('docente/citatorio/0'); ?>"><i class="fa fa-send"></i> <span>Enviar Citatorio</span></a></li>
+                        <li><a href="<?php echo site_url('docente/mi_evaluacion'); ?>"><i class="fa fa-search"></i> <span>Consulta Evaluación</span></a></li>
                         </li>
                     </ul>
                     <!-- MENU PARA LOS PADRES -->
@@ -107,6 +107,7 @@
                         <li><a href="<?php echo site_url('mantenimiento/periodo'); ?>"><i class="fa fa-calendar"></i> <span>Periodo</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/materia'); ?>"><i class="fa fa-book"></i> <span>Materia</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/servicio'); ?>"><i class="fa fa-server"></i> <span>Servicio</span></a></li>
+                        <li><a href="<?php echo site_url('mantenimiento/plantilla_correo'); ?>"><i class="fa fa-file"></i> <span>Plantiila Correo</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/recargo'); ?>"><i class="fa fa-dollar"></i> <span>Recargo</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/grado_escolar'); ?>"><i class="fa fa-sort-asc"></i> <span>Grados Escolares</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/grado'); ?>"><i class="fa fa-sort-alpha-asc"></i> <span>Grado y Grupo</span></a></li>
