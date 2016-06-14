@@ -21,8 +21,8 @@ class ConsultaGral extends CI_Model {
 
         $sql = "select * from documentacion where Expediente_IDExp = " . $IDExp . " and TipoDocumento_IDTipoDoc = " . $IDTipoDoc;
         if (count($this->getOnlyRow($sql)) > 0) {
-            $this->db->where(array('Expediente_IDExp'=>$IDExp,
-                                   "TipoDocumento_IDTipoDoc" => $IDTipoDoc));
+            $this->db->where(array('Expediente_IDExp' => $IDExp,
+                "TipoDocumento_IDTipoDoc" => $IDTipoDoc));
             $this->db->update('documentacion', $data);
         } else {
             $this->db->insert('documentacion', $data);
@@ -83,6 +83,63 @@ class ConsultaGral extends CI_Model {
     public function getIDsGrado($IDGrado = '') {
         $sql = "select * from grado as m where m.IDGrado = " . $IDGrado;
         return $this->getOnlyRow($sql);
+    }
+
+    public function getPlantilla($IDPlantilla) {
+        $sql = "select *,p.Descripcion as Explicacion from plantilla as p
+                left join tipo_plantilla as tp on tp.IDTipoPlantilla=p.IDPlantilla
+                where p.IDTipoPlantilla= " . $IDPlantilla;
+        return $this->getOnlyRow($sql);
+    }
+
+    public function UpdPlantilla($post) {
+        $data = array(
+            "IDPlantilla" => IsNotDefault($post, 'IDPlantilla'),
+            "IDTipoPlantilla" => IsNotDefault($post, 'Tipo'),
+            "Descripcion" => IsNotDefault($post, 'Desc'),
+            "Tema" => IsNotDefault($post, 'Tema')
+        );
+
+        $this->db->where(array('IDPlantilla' => IsNotDefault($post, 'IDPlantilla'),
+            "IDTipoPlantilla" => IsNotDefault($post, 'Tipo')));
+        $this->db->update('plantilla', ToCleanData($data));
+    }
+
+    public function InsCitatorio($post) {
+        $data = array(
+            "IDCitatorio" => IsNotDefault($post, 'IDPlantilla'),
+            "IDTipoPlantilla" => IsNotDefault($post, 'IDTipoPlantilla'),
+            "Para" => IsNotDefault($post, 'Para'),
+            "Cc" => IsNotDefault($post, 'Cc'),
+            "Asunto" => IsNotDefault($post, 'Asunto'),
+            "Mensaje" => IsNotDefault($post, 'Mensaje'),
+            "FecEnvio" => IsNotDefault($post, 'FecEnvio'),
+            "Rechazados" => IsNotDefault($post, 'Rechazados'),
+            "Enviados" => IsNotDefault($post, 'Enviados'),
+            "IDUsuario" => IsNotDefault($post, 'IDUsuario')
+        );
+
+        $this->db->insert('citatorio', ToCleanData($data));
+        return $this->db->insert_id();
+    }
+
+    public function UpdCitatorio($post) {
+        $data = array(
+            "IDCitatorio" => IsNotDefault($post, 'IDPlantilla'),
+            "IDTipoPlantilla" => IsNotDefault($post, 'IDTipoPlantilla'),
+            "Para" => IsNotDefault($post, 'Para'),
+            "Cc" => IsNotDefault($post, 'Cc'),
+            "Asunto" => IsNotDefault($post, 'Asunto'),
+            "Mensaje" => IsNotDefault($post, 'Mensaje'),
+            "FecEnvio" => IsNotDefault($post, 'FecEnvio'),
+            "Rechazados" => IsNotDefault($post, 'Rechazados'),
+            "Enviados" => IsNotDefault($post, 'Enviados'),
+            "IDUsuario" => IsNotDefault($post, 'IDUsuario')
+        );
+
+        $this->db->where(array('IDCitatorio' => IsNotDefault($post, 'IDCitatorio'),
+            "IDTipoPlantilla" => IsNotDefault($post, 'IDTipoPlantilla')));
+        $this->db->update('citatorio', ToCleanData($data));
     }
 
     public function getQuery($sql) {
