@@ -224,19 +224,19 @@ class Estudiante extends CI_Controller {
         $this->load->view('common/footer');
     }
 
-    public function tarea($IDMateria = "") {
-        $where = "u.IdUsuario = " . $this->session->userdata('IdUsuario');
+    public function tarea($IDMateria = 0,$IDUsuario=0) {
+        $where = $IDUsuario == 0 ? "u.IdUsuario = " . $this->session->userdata('IdUsuario') : "u.IdUsuario = " . $IDUsuario;
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
         $data["where"] = "where GradoEsc_IDGradoEsc = " . $data['estudiante'][0]['Grado'];
         $data["tareas"] = array();
         $data["materia"] = "";
 
-        if ($IDMateria != "") {
+        if ($IDMateria > 0) {
             $data["tareas"] = $this->tarea->getTareasMateria($IDMateria);
             $data["materia"] = $IDMateria;
         }
 
-        $data["add_js"] = array('MainEstudianteTarea');
+        $data["add_js"] = array('ajax/MainEstudianteTarea.js');
         $this->load->view('common/header');
         $this->load->view('estudiante/tareas', $data);
         $this->load->view('common/footer');
