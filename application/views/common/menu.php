@@ -88,19 +88,36 @@
                     <!-- MENU PARA LOS PADRES -->
                     <ul class="sidebar-menu">
                         <li class="category">Padres de Familia</li>
-                        <li><a href="<?php echo site_url('padres/cuenta/'); ?>"><i class="fa fa-bookmark"></i> <span>Mi Cuenta</span></a></li>
+                        <li><a href="<?php echo site_url('cobranza/mi_cuenta/'.$this->session->userdata('IDExp')); ?>"><i class="fa fa-bookmark"></i> <span>Mi Cuenta</span></a></li>
+                    </ul>
+                    <!-- MENU PARA LOS HIJOS -->
+                    <?php $hijos = getHijos($this->session->userdata('IdUsuario'));
+                    foreach($hijos as $k => $val){?>
+                    <ul class="sidebar-menu">
+                        <li class="category"><?php echo $val['NomEstudiante']?></li>
                         <li class="hasSubmenu">
-                            <a href="#submenu"><i class="fa fa-graduation-cap"></i> <span>Hijo 1</span></a>
+                            <a href="#submenu"><i class="fa fa-graduation-cap"></i> <span>Académico</span></a>
                             <ul id="submenu">
-                                <li><a href="<?php echo site_url('padres/calificaciones'); ?>"><i class="fa fa-pencil"></i> <span>Califaciones</span></a></li>
-                                <li><a href="<?php echo site_url('padres/reinscripción'); ?>"><i class="fa fa-calendar-check-o"></i> <span>Reinscripción</span></a></li>
-                                <li><a href="<?php echo site_url('estudiante/alta'); ?>"><i class="fa fa-calendar-check-o"></i> <span>Cita de reinscripción</span></a></li>
-                                <li><a href="<?php echo site_url('estudiante/lista'); ?>"><i class="fa fa-file-text-o"></i> <span>Comprobante</span></a></li>
-                                <li><a href="<?php echo site_url('padres/pago_estudiante/'); ?>"><i class="fa fa-pencil"></i> <span>Comprobante de Pago</span></a></li>
-                                <li><a href="<?php echo site_url('padres/disciplina/'); ?>"><i class="fa fa-pencil"></i> <span>Reportes de Conducta</span></a></li>
+                                <li><a href="<?php echo site_url('estudiante/kardex/'.$val['Usuario_IdUsuario']); ?>"><i class="fa fa-outdent"></i> <span>Kárdex</span></a></li>
+                                <li><a href="<?php echo site_url('estudiante/agenda_escolar'); ?>"><i class="fa fa-calendar"></i> <span>Agenda Escolar</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="hasSubmenu">
+                            <a href="#submenu"><i class="fa fa-edit"></i> <span>Inscripción</span></a>
+                            <ul id="submenu">
+                                <li><a href="<?php echo site_url('curricular/horario_individual/'.$val['Usuario_IdUsuario']); ?>"><i class="fa fa-clock-o"></i> <span>Horario</span></a></li>
+                                <li><a href="<?php echo site_url('estudiante/calificaciones/'.$val['Usuario_IdUsuario']); ?>"><i class="fa fa-list-ol"></i> <span>Califaciones</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="hasSubmenu">
+                            <a href="#submenu"><i class="fa fa-search"></i> <span>Consultar</span></a>
+                            <ul id="submenu">
+                                <li><a href="<?php echo site_url('estudiante/tarea/0/'.$val['Usuario_IdUsuario']); ?>"><i class="fa fa-book"></i> <span>Tareas</span></a></li>
+                                <li><a href="<?php echo site_url('mantenimiento/notas'); ?>"><i class="fa fa-bookmark"></i> <span>Notas</span></a></li>
                             </ul>
                         </li>
                     </ul>
+                    <?php }?>
                     <!-- CONFIGURACION DEL SISTEMA -->    
                     <ul class="sidebar-menu">
                         <li class="category"><i class="fa fa-cogs"></i>Configuración</li>
