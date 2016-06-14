@@ -423,6 +423,12 @@ function FechaUltimoPago($IDExp) {
     return $fecha;
 }
 
+function getHijos($IDUsuario) {
+    $CI = & get_instance();
+    $CI->load->model("PadresFam_model", "padres");
+    return $CI->padres->getHijos($IDUsuario);
+}
+
 /* * **************************************************************************
  * FUNCIONES GENERALES PARA USO DE DBs			            			     *
  * ************************************************************************** */
