@@ -1,121 +1,115 @@
-<div class="st-pusher">
-    <!-- this is the wrapper for the content -->
-    <div class="st-content">
-        <!-- extra div for emulating position:fixed of the menu -->
-        <div class="st-content-inner padding-top-none" id="content" style="padding: 20px;">
-		<h4 class="page-section-heading">Citatorio</h4>
-		
-		                <div id="filter">
-                    <form class="form-inline">
-                        <label>Buscar:</label>
-                        <div id="users-filter-trigger">
-                            <label>Grupo:</label>
-                            <div class="select-friends">
-                                <select name="users-filter-friends" class="selectpicker" data-style="btn-primary" data-live-search="true">
-                                    <option value="0">Select Friend</option>
-                                    <option value="1">Mary D.</option>
-                                    <option value="2">Michelle S.</option>
-                                    <option value="3">Adrian Demian</option>
-                                </select>
-                            </div>
-                            <div class="search-name hidden">
-                                <input type="text" class="form-control" name="user-first" placeholder="First Last Name" id="name" />
-                                <a href="#" class="btn btn-default hidden" id="user-search-name"><i class="fa fa-search"></i> Search</a>
-                            </div>
+<div id="content">
+    <div class="container-fluid">
+        <h4 class="page-section-heading">Enviar Citatorios</h4>
+        <input type="hidden" value="" id="func">
+        <div class="panel panel-default">
+            <div class="panel panel-body">
+                <form class="form-horizontal" role="form" method="post" action="<?php echo site_url('docente/enviar_Citatorio')?>">
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">
+                            <button data-backdrop='static' data-keyboard='false'
+                                    data-toggle="modal" data-target="#DIRECTORIO_CORREO" 
+                                    data-content-options="modal-lg" 
+                                    data-func="PARA" 
+                                    type="button" class="DIRECTORIO_CORREO btn btn-primary">
+                                <i class="fa fa-plus floatL t3"></i>
+                                <span class="hidden-xs floatL l5">
+                                    <b>&nbsp; Para</b>
+                                </span>
+                                <div class="clear"></div>
+                            </button>
                         </div>
-                        <div id="users-filter-trigger">
-                            <label>Materia:</label>
-                            <div class="select-friends">
-                                <select name="users-filter-friends" class="selectpicker" data-style="btn-primary" data-live-search="true">
-                                    <option value="0">Select Friend</option>
-                                    <option value="1">Mary D.</option>
-                                    <option value="2">Michelle S.</option>
-                                    <option value="3">Adrian Demian</option>
-                                </select>
-                            </div>
-                            <div class="search-name hidden">
-                                <input type="text" class="form-control" name="user-first" placeholder="Nombre del alumno..." id="name" />
-                                <a href="#" class="btn btn-default hidden" id="user-search-name"><i class="fa fa-search"></i> Buscar</a>
-                            </div>
-                        </div>
-						<div class="panel panel-default share" id="users-filter-trigger">
-                  <div class="input-group">
-                    <div class="input-group-btn">
-                      <a class="btn btn-primary" href="#">
-                        <i class="fa fa-search"></i> Buscar
-                      </a>
-                    </div>
-                    <!-- /btn-group -->
-                    <input type="text" class="form-control share-text" placeholder="Nombre del alumno...">
-                  </div>
-                    </form>
-                </div>
-</div>
-
-
-                <div class="media messages-container media-clearfix-xs-min media-grid">
-                    <div class="media-left">
-                        <div class="messages-list">
-                            <div class="panel panel-default">
-                                <ul class="list-group">
-                                    <li class="list-group-item active">
-                                        <a href="#">
-                                            <div class="media">
-                                                <div class="media-left">
-                                                    <img src="<?php echo base_url(); ?>images/woman-6.jpg" width="50" alt="" class="media-object" />
-                                                </div>
-                                                <div class="media-body">
-                                                    <div class="message">Nombre del alumno</div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <a href="#">
-                                            <div class="media">
-                                                <div class="media-left">
-                                                    <img src="<?php echo base_url(); ?>images/woman-6.jpg" height="50" alt="" class="media-object" />
-                                                </div>
-                                                <div class="media-body">
-                                                    <div class="message">Nombre del alumno</div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </div>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="2" name="PARA" id="PARA"></textarea>
                         </div>
                     </div>
-
-                    <div class="media-body">
-                        <div class="media">
-                            <div class="media-body message">
-							<div class="panel panel-default share">
-											  <div class="input-group">
-												<div class="input-group-btn">
-												  <a class="btn btn-primary" href="#">
-													<i class="fa fa-send"></i>&nbsp;&nbsp;  Enviar a:
-												  </a>
-												</div>
-												<!-- /btn-group -->
-												<input type="text" class="form-control share-text" placeholder="Correo de los padres...">
-											  </div>
-											</div>
-                                <div class="panel panel-default">
-                                    
-                                    <div class="panel-body">
-                                        <div class="summernote"></div>
-
-                                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">
+                            <button data-backdrop='static' data-keyboard='false'
+                                    data-toggle="modal" data-target="#DIRECTORIO_CORREO" 
+                                    data-content-options="modal-lg" 
+                                    data-func="CC"
+                                    type="button" class="DIRECTORIO_CORREO btn btn-primary">
+                                <i class="fa fa-plus floatL t3"></i>
+                                <span class="hidden-xs floatL l5">
+                                    <b>&nbsp; Cc</b>
+                                </span>
+                                <div class="clear"></div>
+                            </button>
+                        </div>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="2" name="CC" id="CC"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Asunto:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Asunto" id="Asunto" value="<?php echo set_value('Asunto'); ?>" placeholder="...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">&nbsp;</label>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-send floatL t3"></i>
+                                        <span class="hidden-xs floatL l5">
+                                            <b>&nbsp; Enviar</b>
+                                        </span>
+                                        <div class="clear"></div>
+                                    </button>
+                                </div>
+                                <div class="col-sm-6">
+                                    <button type="button" class="btn btn-primary"
+                                            data-toggle="collapse" data-target="#collapseExample" 
+                                            aria-expanded="false" aria-controls="collapseExample">
+                                        <i class="fa fa-paperclip floatL t3"></i>
+                                        <span class="hidden-xs floatL l5">
+                                            <b>&nbsp; Adjunto</b>
+                                        </span>
+                                        <div class="clear"></div>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-
-
-
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Plantilla:</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="plantilla" id="plantilla">
+                                        <option value="0">Tipo de Citatorio</option>
+                                        <?php echo getCatOpciones("CatTipoPlantilla", "plantilla", $IDPlantilla) ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                <div class="collapse" id="collapseExample">
+                        <?php $this->load->view('example_sin_div.php', $output);?>
                 </div>
+                <br>
+                <!--<div class="summernote"></div>-->
+                <textarea name="editor" id="editor" rows="10" cols="80">
+                    <?php echo $plantilla['Tema']; ?>
+                </textarea>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
-<br><br>
+<p id="PARAHide"></p>
+<p id="CCHide"></p>
+<?php $this->load->view('modal/directorio_correo'); ?>
+<script>
+    function PARA(correo) {
+        var correos = $("#PARAHide").text();
+        correos += correo;
+        $("#PARAHide").text(correos);
+    }
+    function CC(correo) {
+        var correos = $("#CCHide").text();
+        correos += correo;
+        $("#CCHide").text(correos);
+    }
+</script>
