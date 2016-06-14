@@ -175,7 +175,7 @@ class Estudiante extends CI_Controller {
         $data['export_buttons'] = Exportar::buttons();
         $this->session->set_userdata('Export', Exportar::run($lista, $data['estudiante']));
 
-        $data["add_js"] = array('MainReinscripcion', 'Reinscripcion');
+        $data["add_js"] = array('ajax/MainReinscripcion.js', 'ajax/Reinscripcion.js');
         $this->load->view('common/header');
         $this->load->view('estudiante/reinscripcion', $data);
         $this->load->view("modal/estudiante/wizard_reinscripcion");
@@ -293,7 +293,7 @@ class Estudiante extends CI_Controller {
             $data["materia"] = $IDMateria;
         }
 
-        $data["add_js"] = array('MainEstudianteTarea');
+        $data["add_js"] = array('ajax/MainEstudianteTarea.js');
         $this->load->view('common/header');
         $this->load->view('estudiante/consulta_notas',$data);
         $this->load->view('common/footer');
@@ -304,7 +304,7 @@ class Estudiante extends CI_Controller {
         $where = "";
         $data["docente"] = $this->catalogo->Docentes($where);
 
-        $data["add_js"] = array('MainEvaDocente');
+        $data["add_js"] = array('ajax/MainEvaDocente.js');
         $this->load->view('common/header');
         $this->load->view('estudiante/evaluacion_profesor', $data);
         $this->load->view('common/footer');
