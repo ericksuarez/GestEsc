@@ -11,6 +11,10 @@ class Busqueda {
     var $operador;
     var $cntOpe;
 
+    public function Busqueda() {
+        $this->operador = 'and';
+    }
+
     public function Where($table, $columna, $valor, $operador = '=', $isFull = false) {
         if ($isFull) {
             $this->setWhere("where ");
@@ -36,7 +40,7 @@ class Busqueda {
             }
             $campos = substr($campos, 0, -1);
             $this->setWhere("MATCH(" . $campos . ") AGAINST  ('" . $valor . "')");
-            $this->Operador();
+            $this->Operador($this->getOperador());
         }
     }
 
