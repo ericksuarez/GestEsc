@@ -42,7 +42,7 @@ class Curricular extends CI_Controller {
         $data["materias"] = $this->catalogo->CatMateria($where_materia);
         $data["docentes"] = $this->catalogo->Docentes($where_docentes);
 
-        $data["add_js"] = array('MainAsignaGrupos');
+        $data["add_js"] = array('ajax/MainAsignaGrupos.js');
         $this->load->view('common/header');
         $this->load->view('curricular/grupos', $data);
         $this->load->view('common/footer');
@@ -118,7 +118,7 @@ class Curricular extends CI_Controller {
         $data['export_buttons'] = Exportar::btnsPdfPrint();
         $this->session->set_userdata('Export', Exportar::html('curricular/tabla_horario', $data));
 
-        $data["add_js"] = array('MainHorarioGrupal');
+        $data["add_js"] = array('ajax/MainHorarioGrupal.js');
         $this->load->view('common/header');
         $this->load->view('curricular/horario_grupal', $data);
         $this->load->view('common/footer');
@@ -147,7 +147,7 @@ class Curricular extends CI_Controller {
 
         $this->session->set_userdata('Export', Exportar::html('estudiante/horario', $data));
         
-        $data["add_js"] = array('MainHorarioGrupal');
+        $data["add_js"] = array('ajax/MainHorarioGrupal.js');
         $this->load->view('common/header');
         $this->load->view('estudiante/horario', $data);
         $this->load->view('common/footer');
