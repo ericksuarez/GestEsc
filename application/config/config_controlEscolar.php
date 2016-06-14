@@ -12,3 +12,7 @@ $config['RutaFTP'] = "./assets/uploads/files/";
 $config['RutaNota'] = "assets/uploads/files/Notas";
 //RUTA PARA SUBIR LAS TAREAS POR PARTE DE LOS DOCENTES Y ESTUDIANTES
 $config['RutaTarea'] = "assets/uploads/files/Tareas";
+//RUTA PARA SUBIR LOS ARCHIVOS ADJUNTOS DE LOS CORREO EN CASO DE SER NECESARIO
+$config['RutaAdjunto'] = "assets/uploads/files/Adjunto";
+//PARAMETROS DEL CORREO GENERAL DEL SISTEMA
+$config['CorreoGral'] = "erick.suarez.buendia@gmail.com";
