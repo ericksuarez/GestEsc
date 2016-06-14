@@ -360,6 +360,130 @@ class Ajax extends CI_Controller {
         echo json_encode($datalles);
     }
 
+    function getCorreos() {
+        $nombre = $this->input->post('nombre');
+        $tipo = $this->input->post('tipo');
+        $func = $this->input->post('func');
+        $grupo = $this->input->post('grupo');
+        $titulos = '<th>#</th><th>Nombre</th><th>Correo</th>';
+        $rows = "";
+        $html = "";
+        $correos = "";
+        $where = "";
+        switch ($tipo) {
+            case "padresfam":
+            case "estudiante":
+                $titulos = '<th>#</th><th>Nom.Est.</th><th>Nom.Tutor</th><th>Correos</th>';
+                if (!empty($nombre) || $grupo != "") {
+                    $busqueda = new Busqueda();
+                    $busqueda->setOperador("or");
+                    $busqueda->WhereFullText("e", array('Nombre', 'APaterno', 'AMaterno'), $nombre);
+                    $busqueda->setOperador("and");
+                    $busqueda->WhereFullText("pf", array('Nombre', 'APaterno', 'AMaterno'), $nombre);
+                    $busqueda->Where('gr', 'IDGrado', $grupo);
+                    $where = $busqueda->getWhere();
+                }
+                $correos = $this->catal->CorreosEstudiantePadresFam($where);
+                foreach ($correos as $key => $value) {
+                    $email = "'" . str_replace(",", ";", $value['Correos']) . ";" . $value['Correo'] . ";" . "'";
+                    $rows .= '<tr><td><input  type="checkbox" value="' . $key . '" onclick="' . $func . '(' . $email . ')"></td>'
+                            . '<td>' . $value['NomCompletoAlumno'] . '</td>'
+                            . '<td>' . $value['NomCompletoPadres'] . '</td><td>' . $email . '</td></tr>';
+                }
+                break;
+            case "docente":
+                if (!empty($nombre)) {
+                    $busqueda = new Busqueda();
+                    $busqueda->WhereFullText("e", array('Nombre', 'APaterno', 'AMaterno'), $nombre);
+                    $where = $busqueda->getWhere();
+                }
+                $correos = $this->catal->Docentes($where);
+                foreach ($correos as $key => $value) {
+                    $email = "'" . $value['Correo'] . ";'";
+                    $rows .= '<tr><td><input  type="checkbox" value="' . $key . '" onclick="' . $func . '(' . $email . ')"></td>'
+                            . '<td>' . $value['NomCompleto'] . '</td><td>' . $value['Correo'] . '</td></tr>';
+                }
+                break;
+            case "empleado":
+                if (!empty($nombre)) {
+                    $busqueda = new Busqueda();
+                    $busqueda->WhereFullText("e", array('Nombre', 'APaterno', 'AMaterno'), $nombre);
+                    $where = $busqueda->getWhere();
+                }
+                $correos = $this->catal->Empleados($where);
+                foreach ($correos as $key => $value) {
+                    $email = "'" . $value['Correo'] . ";'";
+                    $rows .= '<tr><td><input  type="checkbox" value="' . $key . '" onclick="' . $func . '(' . $email . ')"></td>'
+                            . '<td>' . $value['NomCompleto'] . '</td><td>' . $value['Correo'] . '</td></tr>';
+                }
+                break;
+
+            default:
+                break;
+        }
+        $html = '<thead><tr>' . $titulos . '                                    
+                        </tr>
+                </thead>
+                <tbody id="responsive-table-body">'
+                . $rows .
+                '</tbody>';
+        echo $html . $where;
+    }
+
+    function getCorreosSeleccionarTodos() {
+        $nombre = $this->input->post('nombre');
+        $tipo = $this->input->post('tipo');
+        $func = $this->input->post('func');
+        $grupo = $this->input->post('grupo');
+        $correos = "";
+        $all = "";
+        $where = "";
+        switch ($tipo) {
+            case "padresfam":
+            case "estudiante":
+                if (!empty($nombre) || $grupo != "") {
+                    $busqueda = new Busqueda();
+                    $busqueda->setOperador("or");
+                    $busqueda->WhereFullText("e", array('Nombre', 'APaterno', 'AMaterno'), $nombre);
+                    $busqueda->setOperador("and");
+                    $busqueda->WhereFullText("pf", array('Nombre', 'APaterno', 'AMaterno'), $nombre);
+                    $busqueda->Where('gr', 'IDGrado', $grupo);
+                    $where = $busqueda->getWhere();
+                }
+                $correos = $this->catal->CorreosEstudiantePadresFam($where);
+                foreach ($correos as $key => $value) {
+                    $all .= str_replace(",", ";", $value['Correos']) . ";" . $value['Correo'] . ";";
+                }
+                break;
+            case "docente":
+                if (!empty($nombre)) {
+                    $busqueda = new Busqueda();
+                    $busqueda->WhereFullText("e", array('Nombre', 'APaterno', 'AMaterno'), $nombre);
+                    $where = $busqueda->getWhere();
+                }
+                $correos = $this->catal->Docentes($where);
+                foreach ($correos as $key => $value) {
+                    $all .= $value['Correo'] . ";";
+                }
+                break;
+            case "empleado":
+                if (!empty($nombre)) {
+                    $busqueda = new Busqueda();
+                    $busqueda->WhereFullText("e", array('Nombre', 'APaterno', 'AMaterno'), $nombre);
+                    $where = $busqueda->getWhere();
+                }
+                $correos = $this->catal->Empleados($where);
+                foreach ($correos as $key => $value) {
+                    $all .= $value['Correo'] . ";";
+                }
+                break;
+
+            default:
+                break;
+        }
+        echo $all;
+    }
+    
     public function getQuery($sql) {
         $query = $this->db->query($sql);
 
