@@ -179,7 +179,7 @@ class Docente extends CI_Controller {
         }
         $data["docente"] = $this->catalogo->Docentes($where);
 
-        $data["add_js"] = array('MainCargaMaterias');
+        $data["add_js"] = array('ajax/MainCargaMaterias.js');
         $this->load->view('common/header');
         $this->load->view('docente/carga_materias', $data);
         $this->load->view('common/footer');
