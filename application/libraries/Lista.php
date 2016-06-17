@@ -159,6 +159,10 @@ class Lista {
         $this->tbody .= '</tbody>';
     }
 
+    function addExtraButton($function,$style) {
+        $this->default[$function] = $style;
+    }
+    
     function getUrlController() {
         return $this->urlController;
     }
