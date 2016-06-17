@@ -167,5 +167,12 @@ class Curricular_model extends CI_Model {
         $this->IDHorario = $IDHorario;
     }
 
-
+    public function getEncuestaPesoPercentual($IDDocente,$porcentaje,$tipo) {
+        $sql = "select (SUM(er.Respuesta) * (".$porcentaje."/(COUNT(er.IDEncRes)*4))) as PP,er.Comentario 
+                from encuesta_resuelta as er
+                left join encuesta as e on e.IDEncuesta=er.Pregunta
+                where e.Tipo='".$tipo."' and er.IDDocente= ".$IDDocente.
+                " group by er.IDUsuario";
+        return $this->getQuery($sql);
+    }
 }

@@ -32,7 +32,10 @@ class Login_model extends CI_Model {
             $array = $this->getQuery($estudiante);
         }
         if ($IDTipoUsuario == 2) {
-            $docente = "select CONCAT(Nombre,' ',APaterno,' ',AMaterno) as nombre from docente as d where d.Usuario_IdUsuario = " . $IdUsuario;
+            $docente = "select CONCAT(Nombre,' ',APaterno,' ',AMaterno) as nombre,ex.IDExp 
+                        from docente as d 
+                        left join expediente as ex on ex.Usuario_IDUsuario=d.Usuario_IdUsuario
+                        where d.Usuario_IdUsuario =" . $IdUsuario;
             $array = $this->getQuery($docente);
         }
         if ($IDTipoUsuario == 3) {

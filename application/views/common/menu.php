@@ -22,6 +22,7 @@
                                 <li><a href="<?php echo site_url('docente/alta'); ?>"><i class="fa fa-user-plus"></i> <span>Agregar</span></a></li>
                                 <li><a href="<?php echo site_url('docente/carga_materia'); ?>"><i class="fa fa-plus-circle"></i> <span>Carga Materias</span></a></li>
                                 <li><a href="<?php echo site_url('docente/lista'); ?>"><i class="fa fa-list"></i> <span>Lista</span></a></li>
+                                <li><a href="<?php echo site_url('docente/lista'); ?>"><i class="fa fa-line-chart"></i> <span>Evaluación Docente</span></a></li></li>
                             </ul>
                         </li>
                         <li class="hasSubmenu">
@@ -82,7 +83,7 @@
                             </ul>
                         <li><a href="<?php echo site_url('curricular/horario_individual'); ?>"><i class="fa fa-calendar"></i> <span>Horario</span></a></li>
                         <li><a href="<?php echo site_url('docente/citatorio/0'); ?>"><i class="fa fa-send"></i> <span>Enviar Citatorio</span></a></li>
-                        <li><a href="<?php echo site_url('docente/mi_evaluacion'); ?>"><i class="fa fa-search"></i> <span>Consulta Evaluación</span></a></li>
+                        <li><a href="<?php echo site_url('expediente/evaluacion_docente/'.$this->session->userdata('IDExp')); ?>"><i class="fa fa-search"></i> <span>Consulta Evaluación</span></a></li>
                         </li>
                     </ul>
                     <!-- MENU PARA LOS PADRES -->
@@ -130,6 +131,7 @@
                         <li><a href="<?php echo site_url('mantenimiento/grado'); ?>"><i class="fa fa-sort-alpha-asc"></i> <span>Grado y Grupo</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/documento_usuario'); ?>"><i class="fa fa-user-times"></i> <span>Docs. por Usuario</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/tipodocumento'); ?>"><i class="fa fa-file-archive-o"></i> <span>Tipo Documento</span></a></li>
+                        <li><a href="<?php echo site_url('mantenimiento/encuesta'); ?>"><i class="fa fa-table"></i> <span>Encuesta Docente</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/pais'); ?>"><i class="fa fa-flag"></i> <span>Pais</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/estado'); ?>"><i class="fa fa-flag-o"></i> <span>Estado</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/delegacion'); ?>"><i class="fa fa-tag"></i> <span>Delegación</span></a></li>

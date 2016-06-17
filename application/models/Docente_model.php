@@ -21,17 +21,17 @@ class Docente_model extends CI_Model {
     public function getMaterias($Docente_IDDocente) {
         $sql = "select * from docente_has_materia as dm
                 left join materia as m on m.IDMateria = dm.Materia_IDMateria
-                where dm.Docente_IDDocente =".$Docente_IDDocente;
+                where dm.Docente_IDDocente =" . $Docente_IDDocente;
         return $this->getQuery($sql);
     }
 
     public function getGrupos($Docente_IDDocente) {
         $sql = "select distinct gmd.Grado_IDGrado,g.* from grado_materia_docente as gmd
                 left join grado as g on g.IDGrado = gmd.Grado_IDGrado
-                where gmd.Docente_IDDocente = ".$Docente_IDDocente;
+                where gmd.Docente_IDDocente = " . $Docente_IDDocente;
         return $this->getQuery($sql);
     }
-    
+
     public function getDocentesGrupo($IDGrupo) {
         $sql = "SELECT distinct g.Docente_IDDocente,d.* FROM grado_materia_docente as g
                 left join docente as d on d.IDDocente = Docente_IDDocente 
@@ -42,10 +42,10 @@ class Docente_model extends CI_Model {
     public function getMateriasDocente($IDDocente) {
         $sql = "SELECT * FROM grado_materia_docente as gmd
                 left join materia as m on m.IDMateria = gmd.Materia_IDMateria
-                where gmd.Docente_IDDocente = ".$IDDocente;
+                where gmd.Docente_IDDocente = " . $IDDocente;
         return $this->getQuery($sql);
     }
-    
+
     /*     * **************************************************************************
      *  Fucniones para Insertar la informacion de un Docente en la DB.	*
      * ************************************************************************* */
@@ -180,15 +180,15 @@ class Docente_model extends CI_Model {
         $this->db->update('grupo', $data);
     }
 
-    public function UpdMateria($post,$IDDocente,$IDMateria) {
+    public function UpdMateria($post, $IDDocente, $IDMateria) {
         $data = array(
             "Docente_IDDocente" => $IDDocente,
             "Docente_Turno_IDTurno" => $post["Eturno"],
             "Materia_IDMateria" => $IDMateria,
         );
-        $this->db->where(array('Docente_IDDocente'=>$IDDocente,
-                                   "Docente_Turno_IDTurno" => $post["Eturno"],
-                                   "Materia_IDMateria" => $IDMateria));
+        $this->db->where(array('Docente_IDDocente' => $IDDocente,
+            "Docente_Turno_IDTurno" => $post["Eturno"],
+            "Materia_IDMateria" => $IDMateria));
         $this->db->update('docente_has_materia', $data);
     }
 
@@ -201,14 +201,30 @@ class Docente_model extends CI_Model {
             'IDExp' => $IDExp,
             'Usuario_IDUsuario' => $Usuario_IDUsuario));
     }
-    
-    public function ExisteMateria($IDDocente,$IDMateria) {
+
+    public function ExisteMateria($IDDocente, $IDMateria) {
         $sql = "SELECT * FROM docente_has_materia 
-                WHERE Docente_IDDocente = ".$IDDocente."
-                AND Materia_IDMateria = ".$IDMateria;
+                WHERE Docente_IDDocente = " . $IDDocente . "
+                AND Materia_IDMateria = " . $IDMateria;
         $array = $this->getOnlyRow($sql);
         return count($array) > 1 ? TRUE : FALSE;
-        
+    }
+
+    public function encuesta() {
+        $sql = "select * from encuesta";
+        return $this->getQuery($sql);
+    }
+
+    public function InsEncuestaResuelta($IDDocente, $Pregunta, $Respuesta, $Comentario) {
+        $data = array(
+            "IDDocente" => $IDDocente,
+            "IDUsuario" => $this->session->userdata('IdUsuario'),
+            "Pregunta" => $Pregunta,
+            "Respuesta" => $Respuesta,
+            "Comentario" => $Comentario,
+        );
+        $this->db->insert('encuesta_resuelta', $data);
+        return $this->db->insert_id();
     }
 
     /*     * **************************************************************************

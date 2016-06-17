@@ -22,6 +22,7 @@ class Expediente extends CI_Controller {
         $this->load->model("Expediente_model", "expediente");
         $this->load->model("Docente_model", "docente");
         $this->load->model("ConsultaGral", "gral");
+        $this->load->model("Curricular_model", "curricular");
     }
 
     public function index() {
@@ -105,6 +106,32 @@ class Expediente extends CI_Controller {
         $this->expediente->eliminaExpediente($IDExp);
         $this->session->set_flashdata('exito', 'El Expediente de borro correctamente.');
         redirect(strtolower($Exp["Descripcion"]) . '/lista');
+    }
+
+    public function evaluacion_docente($IDExp) {
+        $res = array();
+        $Docente = $this->catalogo->Docentes("ex.IDExp=" . $IDExp);
+        $res['NomDocente'] = $Docente[0]['NomCompleto'];
+
+        foreach ($this->config->item('TipoEncuesta') as $porcentaje => $tipo) {
+            $cnt = 0;
+            $res[$porcentaje] = $this->curricular->getEncuestaPesoPercentual($Docente[0]['IDDocente'], $porcentaje, $tipo);
+            $res['PP' . $porcentaje] = 0;
+            foreach ($res[$porcentaje] as $key => $value) {
+                $res['PP' . $porcentaje] += $value['PP'];
+                $res['comentarios'][$key] = $value['Comentario'];
+                $cnt++;
+            }
+            if ($res['PP' . $porcentaje] > 0) {
+                $res['PP' . $porcentaje] /= $cnt;
+            }  else {
+                $res['PP' . $porcentaje] = 1;
+            }
+        }
+
+        $this->load->view('common/header');
+        $this->load->view('docente/ver_evaluacion', $res);
+        $this->load->view('common/footer');
     }
 
 }

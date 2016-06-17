@@ -311,7 +311,7 @@ class Mantenimiento extends CI_Controller {
         $crud->required_fields('Materia_IDMateria', 'Docente_IDDocente', 'Periodo_IDPeriodo', 'NomTarea', 'FecEntrega');
         $crud->callback_column('Ext.Recurso', array($this, '_extraRecurso'));
         $output = $crud->render();
-        
+
         array_push($output->js_files, base_url() . "ajax/MainEstudianteTarea.js");
         $this->load->view('common/header.php');
         $this->load->view('docente/tareas', $data);
@@ -372,12 +372,11 @@ class Mantenimiento extends CI_Controller {
 
         $crud->set_table('evaluacioncont');
         $crud->set_subject('Evaluación Continua');
-        $crud->columns('Estudiante_IDEstudiante', 'Tareas_IDTareas', 'Calificacion', 'FecEntregada','Doc.Tarea');
+        $crud->columns('Estudiante_IDEstudiante', 'Tareas_IDTareas', 'Calificacion', 'FecEntregada', 'Doc.Tarea');
         $crud->where('evaluacioncont.Docente_IDDocente', $data['docente'][0]['IDDocente']);
         $crud->set_relation('Tareas_IDTareas', 'tareas', 'NomTarea');
         $crud->set_relation('Materia_IDMateria', 'materia', 'Nombre', $where_materia);
-        $crud->set_relation('Docente_IDDocente', 'docente', '{Nombre} {APaterno} {AMaterno}', 
-                            array('IDDocente' => $data['docente'][0]['IDDocente']));
+        $crud->set_relation('Docente_IDDocente', 'docente', '{Nombre} {APaterno} {AMaterno}', array('IDDocente' => $data['docente'][0]['IDDocente']));
         $crud->set_relation('Periodo_IDPeriodo', 'periodo', 'Descripcion');
         $crud->set_relation('Estudiante_IDEstudiante', 'estudiante', '{Nombre} {APaterno} {AMaterno}');
 
@@ -392,7 +391,7 @@ class Mantenimiento extends CI_Controller {
         $crud->required_fields('Calificacion', 'FecEntregada');
         $crud->callback_column('Doc.Tarea', array($this, '_verDocTarea'));
         $crud->edit_fields('Calificacion', 'FecEntregada');
-        
+
         $crud->unset_read();
         $crud->unset_delete();
 
@@ -401,15 +400,15 @@ class Mantenimiento extends CI_Controller {
         $this->load->view('docente/acentar_calificaciones', $data);
         $this->load->view('example.php', $output);
     }
-    
+
     function _verDocTarea($primary_key, $row) {
-        return '<a href="'.$row->Archivo.'" target="_new"
+        return '<a href="' . $row->Archivo . '" target="_new"
             class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button">
                     <span class="ui-button-icon-primary ui-icon ui-icon-document"></span>
                     <span class="ui-button-text">&nbsp;Leer</span>
             </a>';
     }
-    
+
     public function plantilla_correo() {
         $crud = new grocery_CRUD();
         $crud->set_table('plantilla');
@@ -417,12 +416,27 @@ class Mantenimiento extends CI_Controller {
         $crud->columns('IDPlantilla', 'IDTipoPlantilla', 'Descripcion');
         $crud->set_relation('IDTipoPlantilla', 'tipo_plantilla', 'Descripcion');
         $crud->display_as('IDPlantilla', '#')
-             ->display_as('IDTipoPlantilla', 'Tipo');
+                ->display_as('IDTipoPlantilla', 'Tipo');
 
-        $crud->required_fields('IDPlantilla', '	IDTipoPlantilla', 'Descripcion');
-        
+        $crud->required_fields('IDPlantilla', 'IDTipoPlantilla', 'Descripcion');
+
         $output = $crud->render();
-        
+
         $this->_example_output($output);
     }
+
+    public function encuesta() {
+        $crud = new grocery_CRUD();
+        $crud->set_table('encuesta');
+        $crud->set_subject('Encuesta Docente');
+        $crud->columns('IDEncuesta', 'Pregunta','Tipo');
+        $crud->display_as('IDEncuesta', '#');
+        $crud->change_field_type('Pregunta', 'text');
+        $crud->required_fields('Pregunta');
+
+        $output = $crud->render();
+
+        $this->_example_output($output);
+    }
+
 }

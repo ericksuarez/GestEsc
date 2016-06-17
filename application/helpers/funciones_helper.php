@@ -429,6 +429,20 @@ function getHijos($IDUsuario) {
     return $CI->padres->getHijos($IDUsuario);
 }
 
+function TieneEvaluacion($IDDocente) {
+    $CI = & get_instance();
+    $sql = "select * from encuesta_resuelta 
+                where IDDocente = " . $IDDocente.
+                " and IDUsuario = ".$CI->session->userdata('IdUsuario');
+    $query = $CI->db->query($sql);
+
+    if ($query->num_rows() > 0) {
+        return "display: none";
+    } else {
+        return "";
+    }
+}
+
 /* * **************************************************************************
  * FUNCIONES GENERALES PARA USO DE DBs			            			     *
  * ************************************************************************** */

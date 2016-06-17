@@ -19,6 +19,7 @@ class Estudiante extends CI_Controller {
         $this->load->model("Curricular_model", "curricular");
         $this->load->model("Pago_model", "pago");
         $this->load->model("Tarea_model", "tarea");
+        $this->load->model("Docente_model", "docente");
     }
 
     public function alta() {
@@ -224,7 +225,7 @@ class Estudiante extends CI_Controller {
         $this->load->view('common/footer');
     }
 
-    public function tarea($IDMateria = 0,$IDUsuario=0) {
+    public function tarea($IDMateria = 0, $IDUsuario = 0) {
         $where = $IDUsuario == 0 ? "u.IdUsuario = " . $this->session->userdata('IdUsuario') : "u.IdUsuario = " . $IDUsuario;
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
         $data["where"] = "where GradoEsc_IDGradoEsc = " . $data['estudiante'][0]['Grado'];
@@ -241,14 +242,14 @@ class Estudiante extends CI_Controller {
         $this->load->view('estudiante/tareas', $data);
         $this->load->view('common/footer');
     }
-    
-    public function documentoTarea($IDExp,$IDMateria,$IDTareas) {
+
+    public function documentoTarea($IDExp, $IDMateria, $IDTareas) {
         $this->load->library('Upload_TipoDocs');
 
         $where = "u.IdUsuario = " . $this->session->userdata('IdUsuario');
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
-        $info = $this->tarea->getTareasMateria($IDMateria,$IDTareas);
-        
+        $info = $this->tarea->getTareasMateria($IDMateria, $IDTareas);
+
         $post = array(
             "IDTareas" => $IDTareas,
             "IDMateria" => $IDMateria,
@@ -259,23 +260,23 @@ class Estudiante extends CI_Controller {
             "Calificacion" => 0,
             "Archivo" => ""
         );
-        
-        $data = $this->upload_tipodocs->cargarTarea($IDExp,$post);
+
+        $data = $this->upload_tipodocs->cargarTarea($IDExp, $post);
 
         if (is_array($data)) {
             $this->session->set_flashdata('error', 'Se produjo un error al subir los documentos!!!<br>' . $data);
-            redirect('estudiante/tarea/'.$IDMateria);
+            redirect('estudiante/tarea/' . $IDMateria);
         } else {
             $this->session->set_flashdata('exito', 'La tarea se subieron con éxito.');
-            redirect('estudiante/tarea/'.$IDMateria);
+            redirect('estudiante/tarea/' . $IDMateria);
         }
     }
-    
-    public function descarga($IDMateria,$IDTarea) {
+
+    public function descarga($IDMateria, $IDTarea) {
         $this->load->library('Upload_TipoDocs');
-        $this->upload_tipodocs->descargaTarea($IDMateria,$IDTarea);
+        $this->upload_tipodocs->descargaTarea($IDMateria, $IDTarea);
     }
-    
+
     public function defautlDescarga($IDTareas, $materia, $IDEstudiante, $IDPeriodo) {
         $this->load->library('Upload_TipoDocs');
         $this->upload_tipodocs->defautlDescarga($IDTareas, $materia, $IDEstudiante, $IDPeriodo);
@@ -289,25 +290,43 @@ class Estudiante extends CI_Controller {
         $data["materia"] = "";
 
         if ($IDMateria != "") {
-            $data["tareas"] = $this->tarea->notas($IDMateria,$data['estudiante'][0]['Grado']);
+            $data["tareas"] = $this->tarea->notas($IDMateria, $data['estudiante'][0]['Grado']);
             $data["materia"] = $IDMateria;
         }
 
         $data["add_js"] = array('ajax/MainEstudianteTarea.js');
         $this->load->view('common/header');
-        $this->load->view('estudiante/consulta_notas',$data);
+        $this->load->view('estudiante/consulta_notas', $data);
         $this->load->view('common/footer');
     }
 
     public function evaluacion_docente() {
-        $post = $this->input->post();
-        $where = "";
-        $data["docente"] = $this->catalogo->Docentes($where);
-
-        $data["add_js"] = array('ajax/MainEvaDocente.js');
-        $this->load->view('common/header');
-        $this->load->view('estudiante/evaluacion_profesor', $data);
-        $this->load->view('common/footer');
+        $post = $this->input->post();        
+        $where = "e.Usuario_IdUsuario = ".$this->session->userdata('IdUsuario');
+        $data["estudiante"] = $this->catalogo->Estudiantes($where);
+        $data["docente"] = $this->catalogo->Docentes_x_Grupo($data["estudiante"][0]['Grado_IDGrado']);
+        $data["encuesta"] = $this->docente->encuesta();
+        $this->form_validation->set_rules('docente-carga', 'Profesor', 'trim|required');
+        if (!empty($post)) {
+            foreach ($post['encuesta'] as $key => $value) {
+                $this->form_validation->set_rules('encuesta[' . $key . '][respuesta]', 'Pregunta ' . ($key + 1), 'trim|required');
+            }
+        }
+        if ($this->form_validation->run() == FALSE) {
+            $data["add_js"] = array('ajax/MainEvaDocente.js');
+            $this->load->view('common/header');
+            $this->load->view('estudiante/evaluacion_profesor', $data);
+            $this->load->view('common/footer');
+        } else {
+            foreach ($post['encuesta'] as $key => $value) {
+                $this->docente->InsEncuestaResuelta($post['IDDocente'], 
+                                                        $value['pregunta'], 
+                                                        $value['respuesta'], 
+                                                        $post['comentario']);
+            }
+            $this->session->set_flashdata('exito', 'La evaluación se guardo con éxito. Gracias!!!');
+            redirect(current_url());
+        }
     }
 
 }

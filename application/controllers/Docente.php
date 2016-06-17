@@ -62,8 +62,9 @@ class Docente extends CI_Controller {
         }
         $lista = new Lista();
         $lista->configButtons('IDExp', 'expediente');
-        $lista->setThead('Nombre', 'Turno', 'Grupos', 'Materias', 'Fec.Alta');
-        $lista->setRealColumns('NomCompleto', 'Turno_IDTurno', 'Grupos', 'Materias', 'FecInscripcion');
+        $lista->setThead('Nombre', 'Turno', 'Grupos', 'Materias');
+        $lista->setRealColumns('NomCompleto', 'Turno_IDTurno', 'Grupos', 'Materias');
+        $lista->addExtraButton('evaluacion_docente','class="btn btn-primary btn-stroke btn-circle btn-xs"><i class="fa fa-line-chart"></i>');
         $lista->setTbody($data['docente']);
         $data['table'] = $lista->table();
 

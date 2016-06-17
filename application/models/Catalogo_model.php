@@ -146,6 +146,21 @@ class Catalogo_model extends CI_Model {
         $sql = "select IDTipoPlantilla as 'index',Descripcion as opcion from  tipo_plantilla " . $where;
         return $this->getQuery($sql);
     }
+    
+    public function CatTipoRespuestas($where = '') {
+        $sql = "select IDTipoResp as 'index',Respuesta as opcion from  tipo_respuestas " . $where;
+        return $this->getQuery($sql);
+    }
+    
+    public function Docentes_x_Grupo($Grado_IDGrado) {
+        $sql = "select *,concat(e.Nombre,' ',e.APaterno,' ',e.AMaterno) as NomCompleto
+                from docente as e
+                left join usuario as u on u.IdUsuario = e.Usuario_IdUsuario
+                left join expediente as ex on ex.Usuario_IDUsuario = u.IdUsuario
+                left join grado_materia_docente as gmd on gmd.Docente_IDDocente = e.IDDocente
+                where ex.Activo = 1 and gmd.Grado_IDGrado= ".$Grado_IDGrado;
+        return $this->getQuery($sql);
+    }
 
     public function getQuery($sql) {
         $query = $this->db->query($sql);

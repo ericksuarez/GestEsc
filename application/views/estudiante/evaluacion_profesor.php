@@ -10,7 +10,8 @@
                         <div class="panel panel-default">
                             <ul class="list-group">
                                 <?php foreach ($docente as $key => $value) { ?>
-                                    <li class="list-group-item ">
+                                    <li class="list-group-item <?php echo set_value('docente-carga')==$value["NomCompleto"] ? "active" : ""; ?>"
+                                        style="<?php echo TieneEvaluacion($value["IDDocente"]);?>">
                                         <a data-exp="<?php echo $value["IDDocente"] ?>" 
                                            data-nombre="<?php echo $value["NomCompleto"] ?>"
                                            data-turno="<?php echo $value["Turno_IDTurno"] ?>"
@@ -35,13 +36,37 @@
                     <div class="media">
                         <div class="media-body message">
                             <div id="espera" style="z-index: 100; position: fixed"></div>
+                                    <?php echo form_open(current_url()); ?>
                             <div class="panel panel-default">
                                 <div class="panel-heading panel-heading-white">
-                                    <h3><label class="control-label" id="docente-carga">
-                                            -- No ha seleccionado a un profesor --</label></h3>
+                                    <h3><input type="text" class="form-control" name="docente-carga" id="docente-carga" 
+                                   value="<?php echo set_value('docente-carga'); ?>" readonly="">
+                                       </h3>
                                 </div>
-                                <div class="panel-body">
-                                    <?php echo form_open(current_url()); ?>
+                                <div class="panel-body" id="ver-encuesta">
+                                    <input name="IDDocente" type="hidden" value="" id="IDDocente">
+                                    <?php foreach ($encuesta as $k => $val) { ?>
+                                    <input name="encuesta[<?php echo $k?>][pregunta]" type="hidden" value="<?php echo $val['IDEncuesta']?>">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p class="text-justify">
+                                                    <?php echo $val['Pregunta'] ?>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <select class="form-control" name="encuesta[<?php echo $k?>][respuesta]" id="respuestas">
+                                                    <option value="">Selecciona una opción</option>
+                                                    <?php echo getCatOpciones("CatTipoRespuestas","encuesta[".$k."][respuesta]") ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    <?php } ?>
+                                    <div class="row">
+                                        <label>Comentarios:</label>
+                                        <div class="col-md-12">
+                                            <textarea class="form-control" name="comentario" rows="3"></textarea>
+                                        </div>
+                                    </div>
                                     <br>
                                     <div class="pull-right">
                                         <button type="submit" class="btn btn-success btn-sm">
@@ -52,9 +77,9 @@
                                             <div class="clear"></div>
                                         </button>
                                     </div>
-                                    <?php echo form_close(); ?>
                                 </div>
                             </div>
+                                    <?php echo form_close(); ?>
                         </div>
                     </div>
                 </div>
