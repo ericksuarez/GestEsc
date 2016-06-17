@@ -16,3 +16,9 @@ $config['RutaTarea'] = "assets/uploads/files/Tareas";
 $config['RutaAdjunto'] = "assets/uploads/files/Adjunto";
 //PARAMETROS DEL CORREO GENERAL DEL SISTEMA
 $config['CorreoGral'] = "erick.suarez.buendia@gmail.com";
+
+//VALORES PORCENTUALES Y TIPOS PARA LA EVALUACION DOCENTE
+$config['TipoEncuesta'] = array(
+    30 => "OCUPACIONAL",
+    70 => "PROCESO ENSEÑANZA-APRENDIZAJE"
+);

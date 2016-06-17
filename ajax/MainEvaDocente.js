@@ -18,7 +18,7 @@ $(document).ready(function () {
 
         $(this).parent().addClass('active');
 
-        $('#docente-carga').text(nombre);
+        $('#docente-carga').val(nombre);
         $('#IDDocente').val(IDExp);
         $('#Eturno').val(turno);
 
