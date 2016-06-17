@@ -114,13 +114,13 @@ class ConsultaGral extends CI_Model {
             "Asunto" => IsNotDefault($post, 'Asunto'),
             "Mensaje" => IsNotDefault($post, 'Mensaje'),
             "FecEnvio" => IsNotDefault($post, 'FecEnvio'),
-            "Rechazados" => IsNotDefault($post, 'Rechazados'),
-            "Enviados" => IsNotDefault($post, 'Enviados'),
+            "Error" => IsNotDefault($post, 'Error'),
             "IDUsuario" => IsNotDefault($post, 'IDUsuario')
         );
 
         $this->db->insert('citatorio', ToCleanData($data));
-        return $this->db->insert_id();
+        $IDCitatorio = $this->db->insert_id();
+        return $IDCitatorio;
     }
 
     public function UpdCitatorio($post) {
@@ -132,14 +132,28 @@ class ConsultaGral extends CI_Model {
             "Asunto" => IsNotDefault($post, 'Asunto'),
             "Mensaje" => IsNotDefault($post, 'Mensaje'),
             "FecEnvio" => IsNotDefault($post, 'FecEnvio'),
-            "Rechazados" => IsNotDefault($post, 'Rechazados'),
-            "Enviados" => IsNotDefault($post, 'Enviados'),
+            "Error" => IsNotDefault($post, 'Error'),
             "IDUsuario" => IsNotDefault($post, 'IDUsuario')
         );
 
         $this->db->where(array('IDCitatorio' => IsNotDefault($post, 'IDCitatorio'),
             "IDTipoPlantilla" => IsNotDefault($post, 'IDTipoPlantilla')));
         $this->db->update('citatorio', ToCleanData($data));
+    }
+    
+    public function getAdjuntar($IDUsuario) {
+        $sql = "select * from adjuntar where IDCitatorio = 0 and IDUsuario = ".$IDUsuario;
+        return $this->getQuery($sql);
+    }
+
+    public function UpdAdjuntar($IDCitatorio,$IDUsuario) {
+        $data = array(
+            "IDCitatorio" => $IDCitatorio,
+        );
+
+        $this->db->where(array('IDCitatorio' => 0,
+                                "IDUsuario" => $IDUsuario));
+        $this->db->update('adjuntar', ToCleanData($data));
     }
 
     public function getQuery($sql) {

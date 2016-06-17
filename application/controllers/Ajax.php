@@ -386,6 +386,7 @@ class Ajax extends CI_Controller {
                 $correos = $this->catal->CorreosEstudiantePadresFam($where);
                 foreach ($correos as $key => $value) {
                     $email = "'" . str_replace(",", ";", $value['Correos']) . ";" . $value['Correo'] . ";" . "'";
+                    $email = str_replace("N/A;", "", $email);
                     $rows .= '<tr><td><input  type="checkbox" value="' . $key . '" onclick="' . $func . '(' . $email . ')"></td>'
                             . '<td>' . $value['NomCompletoAlumno'] . '</td>'
                             . '<td>' . $value['NomCompletoPadres'] . '</td><td>' . $email . '</td></tr>';
@@ -400,6 +401,7 @@ class Ajax extends CI_Controller {
                 $correos = $this->catal->Docentes($where);
                 foreach ($correos as $key => $value) {
                     $email = "'" . $value['Correo'] . ";'";
+                    $email = str_replace("N/A;", "", $email);
                     $rows .= '<tr><td><input  type="checkbox" value="' . $key . '" onclick="' . $func . '(' . $email . ')"></td>'
                             . '<td>' . $value['NomCompleto'] . '</td><td>' . $value['Correo'] . '</td></tr>';
                 }
@@ -413,6 +415,7 @@ class Ajax extends CI_Controller {
                 $correos = $this->catal->Empleados($where);
                 foreach ($correos as $key => $value) {
                     $email = "'" . $value['Correo'] . ";'";
+                    $email = str_replace("N/A;", "", $email);
                     $rows .= '<tr><td><input  type="checkbox" value="' . $key . '" onclick="' . $func . '(' . $email . ')"></td>'
                             . '<td>' . $value['NomCompleto'] . '</td><td>' . $value['Correo'] . '</td></tr>';
                 }
@@ -427,7 +430,7 @@ class Ajax extends CI_Controller {
                 <tbody id="responsive-table-body">'
                 . $rows .
                 '</tbody>';
-        echo $html . $where;
+        echo $html;
     }
 
     function getCorreosSeleccionarTodos() {
@@ -481,7 +484,7 @@ class Ajax extends CI_Controller {
             default:
                 break;
         }
-        echo $all;
+        echo str_replace("N/A;", "",$all);
     }
     
     public function getQuery($sql) {

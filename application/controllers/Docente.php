@@ -64,7 +64,7 @@ class Docente extends CI_Controller {
         $lista->configButtons('IDExp', 'expediente');
         $lista->setThead('Nombre', 'Turno', 'Grupos', 'Materias');
         $lista->setRealColumns('NomCompleto', 'Turno_IDTurno', 'Grupos', 'Materias');
-        $lista->addExtraButton('evaluacion_docente','class="btn btn-primary btn-stroke btn-circle btn-xs"><i class="fa fa-line-chart"></i>');
+        $lista->addExtraButton('evaluacion_docente', 'class="btn btn-primary btn-stroke btn-circle btn-xs"><i class="fa fa-line-chart"></i>');
         $lista->setTbody($data['docente']);
         $data['table'] = $lista->table();
 
@@ -228,8 +228,8 @@ class Docente extends CI_Controller {
         $crud = new grocery_CRUD();
         $crud->set_table('adjuntar');
         $crud->columns('Documento');
-        $crud->where('IDCitatorio',0);
-        $crud->where('IDUsuario',$this->session->userdata('IdUsuario'));
+        $crud->where('IDCitatorio', 0);
+        $crud->where('IDUsuario', $this->session->userdata('IdUsuario'));
         $crud->required_fields('Documento');
         $crud->set_field_upload('Documento', $this->config->item('RutaAdjunto'));
         $crud->add_fields('IDUsuario', 'Documento');
@@ -254,27 +254,33 @@ class Docente extends CI_Controller {
 
     function enviar_Citatorio() {
         $post = $this->input->post();
-        
+
+        $IDUsuario = $this->session->userdata('IdUsuario');
+        $archivos = $this->gral->getAdjuntar($IDUsuario);  
+
         $correo = new Correo();
         $correo->setPara($post['PARA']);
         $correo->setCc($post['CC']);
         $correo->setAsunto($post['Asunto']);
         $correo->setMensaje($post['editor']);
+        $correo->setAdjunto($archivos);
         $correo->enviar();
-        echo $correo->getError();
-        
+
         $data = array(
             "IDTipoPlantilla" => $post['plantilla'],
             "Para" => $post['PARA'],
             "Cc" => $post['CC'],
             "Asunto" => $post['Asunto'],
             "Mensaje" => $post['editor'],
-            "Rechazados" => $correo->getRechazados(),
-            "Enviados" => $correo->getEnviados(),
-            "IDUsuario" => $this->session->userdata('IdUsuario')
+            "Error" => $correo->getError(),
+            "IDUsuario" => $IDUsuario
         );
-//        $this->IDCitatorio = $this->gral->InsCitatorio($data);
-        
+
+        $this->IDCitatorio = $this->gral->InsCitatorio($data);
+        $this->gral->UpdAdjuntar($this->IDCitatorio, $IDUsuario);
+
+        $this->session->set_flashdata('exito', 'El correo masivo se envio con éxito.');
+        redirect('docente/citatorio/0');
     }
 
 }

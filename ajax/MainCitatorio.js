@@ -14,12 +14,15 @@ $(document).ready(function () {
         $("#CCHide").text('');
         $('#verGrupos').hide();
         $('#tipo').val("0");
+        $('#BpEmail').val("");
     });
 
     $('#seleccionarEmails').click(function () {
         var func = $("#func").val();
         var correos = $("#" + func + "Hide").text();
-        $("#" + func).text(correos);
+        var correosOLD = $("#" + func).text();
+        $("#" + func).text('');
+        $("#" + func).text(correosOLD + correos);
     });
 
     $('#tipo').change(function () {
@@ -68,7 +71,7 @@ $(document).ready(function () {
         });
 
         request.done(function (msg) {
-            $("#" + func).text(msg);
+            $("#" + func).text($("#" + func).text() + msg);
         });
 
         request.fail(function (jqXHR, textStatus) {

@@ -9,11 +9,11 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.uiColor = '#AADC6E';
 	config.skin = 'bootstrapck';
 	// added code for ckfinder ------>
-	 config.filebrowserBrowseUrl = '/grocery/assets/grocery_crud/texteditor/ckfinder/ckfinder.html';
-	 config.filebrowserImageBrowseUrl = '/grocery/assets/grocery_crud/texteditor/ckfinder/ckfinder.html?type=Images';
-	 config.filebrowserFlashBrowseUrl = '/grocery/assets/grocery_crud/texteditor/ckfinder/ckfinder.html?type=Flash';
-	 config.filebrowserUploadUrl = '/grocery/assets/grocery_crud/texteditor/ckfinder/core/connector /php/connector.php?command=QuickUpload&type=Files';
-	 config.filebrowserImageUploadUrl = '/grocery/assets/grocery_crud/texteditor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images';
-	 config.filebrowserFlashUploadUrl = '/grocery/assets/grocery_crud/texteditor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash';
+	 config.filebrowserBrowseUrl = '/ControlEscolar/assets/grocery_crud/texteditor/ckfinder/ckfinder.html';
+	 config.filebrowserImageBrowseUrl = '/ControlEscolar/assets/grocery_crud/texteditor/ckfinder/ckfinder.html?type=Images';
+	 config.filebrowserFlashBrowseUrl = '/ControlEscolar/assets/grocery_crud/texteditor/ckfinder/ckfinder.html?type=Flash';
+	 config.filebrowserUploadUrl = '/ControlEscolar/assets/grocery_crud/texteditor/ckfinder/core/connector /php/connector.php?command=QuickUpload&type=Files';
+	 config.filebrowserImageUploadUrl = '/ControlEscolar/assets/grocery_crud/texteditor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images';
+	 config.filebrowserFlashUploadUrl = '/ControlEscolar/assets/grocery_crud/texteditor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash';
 // end: code for ckfinder ------>
 };

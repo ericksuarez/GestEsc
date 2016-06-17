@@ -20,9 +20,26 @@ class Correo {
         $this->CI->load->library('email');
     }
 
+    private function Setting_Email_Preferences() {
+        $config = array(
+            'protocol' => 'smtp',
+            'smtp_host' => 'smtp.gmail.com',
+            'smtp_user' => 'erick.suarez.buendia@gmail.com',
+            'smtp_pass' => '$e$u4r3z',
+            'smtp_port' => '465',
+            'smtp_crypto' => 'ssl',
+            'mailtype' => 'html',
+            'wordwrap' => TRUE,
+            'charset' => 'utf-8'
+        );
+
+        $this->CI->email->initialize($config);
+    }
+
     public function enviar() {
         $this->Setting_Email_Preferences();
-        
+
+        $this->CI->email->set_newline("\r\n");
         $this->CI->email->from($this->CI->config->item('CorreoGral'), $this->CI->config->item('NomEscuela'));
         $this->CI->email->to($this->getPara());
         $this->CI->email->cc($this->getCc());
@@ -35,13 +52,10 @@ class Correo {
         }
     }
 
-    private function Setting_Email_Preferences() {
-        $config['protocol'] = 'sendmail';
-        $config['mailpath'] = '/usr/sbin/sendmail';
-        $config['charset'] = 'iso-8859-1';
-        $config['wordwrap'] = TRUE;
-
-        $this->CI->email->initialize($config);
+    public function setAdjunto($archivos) {
+        foreach ($archivos as $key => $value) {
+            $this->CI->email->attach($this->CI->config->item('RutaAdjunto') . '/' . $value['Documento']);
+        }
     }
 
     function getPara() {
@@ -69,11 +83,11 @@ class Correo {
     }
 
     function setPara($para) {
-        $this->para = $para;
+        $this->para = str_replace(";", ",", $para);
     }
 
     function setCc($cc) {
-        $this->cc = $cc;
+        $this->cc = str_replace(";", ",", $cc);
     }
 
     function setAsunto($asunto) {
