@@ -26,14 +26,37 @@ class Expediente extends CI_Controller {
     }
 
     public function index() {
+        $post = $this->input->post();
+        $where = "";
 
-        $expedientes = $this->catalogo->Estudiantes();
+        if (!empty($post)) {
+            foreach ($post as $key => $value) {
+                $$key = $value;
+            }
+            $busqueda = new Busqueda();
+            $busqueda->WhereFullText("e", array('Nombre', 'APaterno', 'AMaterno'), $nombre);
+            $busqueda->Where("e", 'matricula', $matricula);
+            $busqueda->Where('e', 'Turno_IDTurno', $turno);
+            $busqueda->Where('gr', 'IDGrado', $grupo);
+            $where = $busqueda->getWhere();
+        }
 
-        $data["expedientes"] = $expedientes;
+        $data['estudiante'] = $this->catalogo->Estudiantes($where);
+
+        $lista = new Lista();
+        $lista->setThead('Matricula', 'Nombre Completo', 'Grupo', 'Turno');
+        $lista->setActiveTfoot(FALSE);
+        $lista->setRealColumns('Matricula', 'NomCompleto', 'GradoGrupo', 'Turno_IDTurno');
+        $lista->setExport('export');
+        $lista->setTbody($data['estudiante']);
+
+        $data['export_buttons'] = Exportar::buttons();
+        $this->session->set_userdata('Export', Exportar::run($lista, $data['estudiante']));
 
         $this->load->view('common/header');
         $this->load->view('lista_expediente', $data);
         $this->load->view('common/footer');
+        ;
     }
 
     public function consultar($IDExp) {
@@ -124,13 +147,22 @@ class Expediente extends CI_Controller {
             }
             if ($res['PP' . $porcentaje] > 0) {
                 $res['PP' . $porcentaje] /= $cnt;
-            }  else {
+            } else {
                 $res['PP' . $porcentaje] = 1;
             }
         }
 
         $this->load->view('common/header');
         $this->load->view('docente/ver_evaluacion', $res);
+        $this->load->view('common/footer');
+    }
+    
+    public function modulos($IDExp) {
+        $info = $this->gral->getTipoUsuario($IDExp);
+        $data['IDExp'] = $IDExp;
+        $data['IDUsuario'] = $info["Usuario_IDUsuario"];
+        $this->load->view('common/header');
+        $this->load->view('modulos_expediente',$data);
         $this->load->view('common/footer');
     }
 

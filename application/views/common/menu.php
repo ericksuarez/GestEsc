@@ -8,6 +8,7 @@
                 <div data-scrollable>
                     <ul class="sidebar-menu">
                         <li class="category">Expedientes</li>
+                        <li><a href="<?php echo site_url('expediente'); ?>"><i class="fa fa-list"></i> <span>Lista Expedientes</span></a></li>
                         <li class="hasSubmenu">
                             <a href="#submenu"><i class="fa fa-graduation-cap"></i> <span>Estudiante</span></a>
                             <ul id="submenu">

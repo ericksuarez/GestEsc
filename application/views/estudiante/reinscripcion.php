@@ -129,7 +129,7 @@
                                     } else {
                                         ?>
                                         <td><p>
-                                                <a href = "<?php echo site_url('expediente/consultar/' . $info['IDExp']); ?>" 
+                                                <a href = "<?php echo site_url('expediente/modulos/' . $info['IDExp']); ?>" 
                                                    class = "btn btn-info btn-stroke  btn-xs"><i class="fa fa-book"></i>&nbsp; Ver Expediente</a>
                                             </p>
                                         </td>

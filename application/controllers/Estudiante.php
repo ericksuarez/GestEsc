@@ -300,9 +300,9 @@ class Estudiante extends CI_Controller {
         $this->load->view('common/footer');
     }
 
-    public function evaluacion_docente() {
+    public function evaluacion_docente($IDUsuario = 0) {
         $post = $this->input->post();        
-        $where = "e.Usuario_IdUsuario = ".$this->session->userdata('IdUsuario');
+        $where = ($IDUsuario == 0) ? "e.Usuario_IdUsuario = " . $this->session->userdata('IdUsuario') : "e.Usuario_IdUsuario = " . $IDUsuario;;
         $data["estudiante"] = $this->catalogo->Estudiantes($where);
         $data["docente"] = $this->catalogo->Docentes_x_Grupo($data["estudiante"][0]['Grado_IDGrado']);
         $data["encuesta"] = $this->docente->encuesta();
