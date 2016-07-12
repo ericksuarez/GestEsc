@@ -220,9 +220,7 @@ class Estudiante extends CI_Controller {
     }
 
     public function agenda_escolar() {
-        $this->load->view('common/header');
-        $this->load->view('estudiante/agenda_escolar');
-        $this->load->view('common/footer');
+        redirect('calendar');
     }
 
     public function tarea($IDMateria = 0, $IDUsuario = 0) {
