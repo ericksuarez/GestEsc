@@ -484,9 +484,9 @@ class Ajax extends CI_Controller {
             default:
                 break;
         }
-        echo str_replace("N/A;", "",$all);
+        echo str_replace("N/A;", "", $all);
     }
-    
+
     public function getQuery($sql) {
         $query = $this->db->query($sql);
 
