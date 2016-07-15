@@ -20,6 +20,7 @@ class Estudiante extends CI_Controller {
         $this->load->model("Pago_model", "pago");
         $this->load->model("Tarea_model", "tarea");
         $this->load->model("Docente_model", "docente");
+        Acceso::TieneSesionActiva();
     }
 
     public function alta() {

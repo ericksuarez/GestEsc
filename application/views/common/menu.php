@@ -6,7 +6,7 @@
         <div class="split-vertical-body">
             <div class="split-vertical-cell">
                 <div data-scrollable>
-                    <ul class="sidebar-menu">
+                    <ul class="sidebar-menu" <?php echo Acceso::PermiteGrupo(Grupo::ADMIN,Grupo::EMPLEADO,Grupo::DIRECTIVO);?>>
                         <li class="category">Expedientes</li>
                         <li><a href="<?php echo site_url('expediente'); ?>"><i class="fa fa-list"></i> <span>Lista Expedientes</span></a></li>
                         <li class="hasSubmenu">
@@ -41,19 +41,19 @@
                             </ul>
                         </li>
                     </ul>
-                    <ul class="sidebar-menu">
+                    <!--SECCION DE COBRANZA-->
+                    <ul class="sidebar-menu" <?php echo Acceso::PermiteGrupo(Grupo::ADMIN,Grupo::EMPLEADO,Grupo::DIRECTIVO);?>>
                         <li class="category">Cobranza</li>
                         <li><a href="<?php echo site_url('cobranza/cuentas'); ?>"><i class="fa fa-dollar"></i> <span>Cuentas</span></a></li>
                         <li><a href="<?php echo site_url('cobranza/reportes'); ?>"><i class="fa fa-print"></i> <span>Reportes</span></a></li>
                     </ul>
                     <!-- MENU PARA LOS ALUMNOS -->
-                    <ul class="sidebar-menu">
+                    <ul class="sidebar-menu" <?php echo Acceso::PermiteGrupo(Grupo::ADMIN,Grupo::ESTUDIANTE);?>>
                         <li class="category">Estudiante</li>
                         <li class="hasSubmenu">
                             <a href="#submenu"><i class="fa fa-graduation-cap"></i> <span>Académicos</span></a>
                             <ul id="submenu">
                                 <li><a href="<?php echo site_url('estudiante/kardex'); ?>"><i class="fa fa-outdent"></i> <span>Kárdex</span></a></li>
-                                <li><a href="<?php echo site_url('estudiante/agenda_escolar'); ?>"><i class="fa fa-calendar"></i> <span>Agenda Escolar</span></a></li>
                             </ul>
                         </li>
                         <li class="hasSubmenu">
@@ -73,7 +73,7 @@
                         </li>
                     </ul>
                     <!-- MENU PARA LOS PROFESORES -->
-                    <ul class="sidebar-menu">
+                    <ul class="sidebar-menu" <?php echo Acceso::PermiteGrupo(Grupo::ADMIN,Grupo::DOCENTE);?>>
                         <li class="category">Docente</li>
                         <li class="hasSubmenu">
                             <a href="#submenu"><i class="fa fa-graduation-cap"></i> <span>Académico</span></a>
@@ -88,7 +88,7 @@
                         </li>
                     </ul>
                     <!-- MENU PARA LOS PADRES -->
-                    <ul class="sidebar-menu">
+                    <ul class="sidebar-menu" <?php echo Acceso::PermiteGrupo(Grupo::ADMIN,Grupo::PADRES_FAMILIA);?>>
                         <li class="category">Padres de Familia</li>
                         <li><a href="<?php echo site_url('cobranza/mi_cuenta/'.$this->session->userdata('IDExp')); ?>"><i class="fa fa-bookmark"></i> <span>Mi Cuenta</span></a></li>
                     </ul>
@@ -121,7 +121,7 @@
                     </ul>
                     <?php }?>
                     <!-- CONFIGURACION DEL SISTEMA -->    
-                    <ul class="sidebar-menu">
+                    <ul class="sidebar-menu" <?php echo Acceso::PermiteGrupo(Grupo::ADMIN,Grupo::DIRECTIVO);?>>
                         <li class="category"><i class="fa fa-cogs"></i>Configuración</li>
                         <li><a href="<?php echo site_url('mantenimiento/periodo'); ?>"><i class="fa fa-calendar"></i> <span>Periodo</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/materia'); ?>"><i class="fa fa-book"></i> <span>Materia</span></a></li>
@@ -139,11 +139,13 @@
                         <li><a href="<?php echo site_url('mantenimiento/colonia'); ?>"><i class="fa fa-tags"></i> <span>Colonia</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/unidades'); ?>"><i class="fa fa-calculator"></i> <span>Unidades</span></a></li>
                         <li><a href="<?php echo site_url('mantenimiento/turno'); ?>"><i class="fa fa-unlock"></i> <span>Turno</span></a></li>
-                        <li><a href="<?php echo site_url('mantenimiento/tipousuario'); ?>"><i class="fa fa-group"></i> <span>Tipo Usuario</span></a></li>
+                        <li <?php echo Acceso::PermiteGrupo(Grupo::ADMIN);?>><a href="<?php echo site_url('mantenimiento/tipousuario'); ?>"><i class="fa fa-group"></i> <span>Tipo Usuario</span></a></li>
                     </ul>
                     <!-- MENU GENERALES -->
-                    <li><a href="<?php echo site_url('mantenimiento/periodo'); ?>" target="_new"><i class="fa fa-calendar"></i> <span>Calendario Escolar</span></a></li>
-                    <li><a href="<?php echo site_url('mantenimiento/periodo'); ?>" target="_new"><i class="fa fa-book"></i> <span>Reglamento</span></a></li>
+                    <ul class="sidebar-menu">
+                        <li><a href="<?php echo site_url('estudiante/agenda_escolar'); ?>"><i class="fa fa-calendar"></i> <span>Agenda Escolar</span></a></li>
+                        <li><a href="<?php echo site_url('mantenimiento/periodo'); ?>" target="_new"><i class="fa fa-book"></i> <span>Reglamento</span></a></li>
+                    </ul>
                 </div>
             </div>
         </div>

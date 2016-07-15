@@ -19,6 +19,7 @@ class Ajax extends CI_Controller {
         $this->load->model("Docente_model", "docente");
         $this->load->model("Pago_model", "pago");
         $this->load->model("Cobranza_model", "cobranza");
+        Acceso::TieneSesionActiva();
     }
 
     public function getCatTipo() {

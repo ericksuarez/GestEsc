@@ -23,6 +23,7 @@ class Expediente extends CI_Controller {
         $this->load->model("Docente_model", "docente");
         $this->load->model("ConsultaGral", "gral");
         $this->load->model("Curricular_model", "curricular");
+        Acceso::TieneSesionActiva();
     }
 
     public function index() {

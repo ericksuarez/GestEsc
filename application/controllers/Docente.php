@@ -22,6 +22,7 @@ class Docente extends CI_Controller {
         $this->load->model("Log_Bitacora_model", "bitacora");
         $this->load->library('grocery_CRUD');
         $this->load->library('correo');
+        Acceso::TieneSesionActiva();
     }
 
     public function alta() {

@@ -14,6 +14,7 @@ class Mantenimiento extends CI_Controller {
         $this->load->model("Docente_model", "docente");
         $this->load->model("Tarea_model", "tarea");
         $this->load->model("ConsultaGral", "gral");
+        Acceso::TieneSesionActiva();
     }
 
     public function index() {

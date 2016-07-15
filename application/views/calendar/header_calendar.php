@@ -16,10 +16,12 @@
 <body>
     <div class="container">
         <ol class="breadcrumb">
-            <li><a href="<?php echo site_url('calendar/agenda') ?>">Calendario</a></li>
-            <li><a href="<?php echo site_url('events') ?>">Agendar Cita</a></li>
+            <li <?php echo Acceso::DenegaGrupo(Grupo::ESTUDIANTE,Grupo::PADRES_FAMILIA)?>>
+                <a href="<?php echo site_url('calendar/agenda') ?>">Calendario</a></li>
+            <li>
+                <a href="<?php echo site_url('events') ?>">Agendar Cita</a></li>
         </ol>
-
+  
         <div id="content" style="z-index: 100;position: fixed;">
             <div class="container-fluid pull-right">
                 <?php if (!empty(validation_errors())) { ?>

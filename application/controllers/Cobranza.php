@@ -20,6 +20,7 @@ class Cobranza extends CI_Controller {
         parent::__construct();
         $this->load->model('Cobranza_model', 'cobranza');
         $this->load->model('Catalogo_model', 'catalogo');
+        Acceso::TieneSesionActiva();
     }
 
     public function mi_cuenta($IDExp) {

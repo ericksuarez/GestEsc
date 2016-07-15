@@ -17,6 +17,7 @@ class Empleado extends CI_Controller {
         $this->load->model("Catalogo_model", "catalogo");
         $this->load->model("ConsultaGral", "gral");
         $this->load->model("Log_Bitacora_model", "bitacora");
+        Acceso::TieneSesionActiva();
     }
 
     public function alta() {

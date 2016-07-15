@@ -9,6 +9,7 @@ class Events extends CI_Controller {
         parent::__construct();
         $this->load->model("Events_model", "evento");
         $this->load->library('form_validation');
+        Acceso::TieneSesionActiva();
     }
 
     public function index() {

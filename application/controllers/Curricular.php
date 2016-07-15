@@ -15,6 +15,7 @@ class Curricular extends CI_Controller {
         $this->load->model("Curricular_model", "curricular");
         $this->load->model("Catalogo_model", "catalogo");
         $this->load->model("ConsultaGral", "gral");
+        Acceso::TieneSesionActiva();
     }
 
     public function grupos() {
