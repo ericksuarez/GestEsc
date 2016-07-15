@@ -29,6 +29,23 @@ class Curricular_model extends CI_Model {
                 order by h.Dia, h.Hora asc";
         return $this->getQuery($sql);
     }
+    
+    public function getHorarioDocente($IDDocente) {
+        $sql = "select concat(g.Grado,' - ',g.Grupo) as Grado,t.IDTurno,h.Dia,h.Hora,m.IDMateria,m.Nombre,m.EsExtra ,
+                group_concat(concat(d.Nombre,' ',d.APaterno,' ',d.AMaterno),'') as Docentes,
+                group_concat(e.IDExp,'') as Expedientes 
+                from horario as h
+                left join grado as g on g.IDGrado = h.Grado_IDGrado
+                left join turno as t on t.IDTurno = h.Turno_IDTurno
+                left join materia as m on m.IDMateria = h.IDMateria
+                left join grado_materia_docente as gmd on gmd.Materia_IDMateria = h.IDMateria and gmd.Turno_IDTurno = h.Turno_IDTurno
+                left join docente as d on d.IDDocente = gmd.Docente_IDDocente
+                left join expediente as e on e.Usuario_IDUsuario = d.Usuario_IdUsuario
+                where d.IDDocente = ".$IDDocente." 
+                group by  h.Dia,h.Hora,m.Nombre
+                order by h.Dia, h.Hora asc";
+        return $this->getQuery($sql);
+    }
 
     /*
      * Inserta el Grupo las Maeria el Docente que las imparte y el Turno

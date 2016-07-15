@@ -125,7 +125,7 @@ class Curricular extends CI_Controller {
     }
 
     public function horario_individual($IDUsuario=0) {
-        $where = 'u.IdUsuario = ' . $IDUsuario == 0 ? $this->session->userdata('IDTipoUsuario') : $IDUsuario;
+        $where = 'u.IdUsuario = ' . (($IDUsuario == 0) ? $this->session->userdata('IdUsuario') : $IDUsuario);
         
         $data['estudiante'] = $this->catalogo->Estudiantes($where);
         $data['IDTurno'] = $data['estudiante'][0]['Turno_IDTurno'];
@@ -150,6 +150,33 @@ class Curricular extends CI_Controller {
         $data["add_js"] = array('ajax/MainHorarioGrupal.js');
         $this->load->view('common/header');
         $this->load->view('estudiante/horario', $data);
+        $this->load->view('common/footer');
+    }
+    
+    public function horario_docente($IDUsuario=0) {
+        $where = 'u.IdUsuario = ' . (($IDUsuario == 0) ? $this->session->userdata('IdUsuario') : $IDUsuario);
+        $data['docente'] = $this->catalogo->Docentes($where);
+        $data['IDTurno'] = $data['docente'][0]['Turno_IDTurno'];
+
+        $hrs = $this->getCreaHrsHorario($data);
+        $data['horas'] = $hrs['horas'];
+        $data['Receso'] = $hrs['Receso'];
+
+        $data['horarios'] = $this->curricular->getHorarioDocente($data['docente'][0]['IDDocente']);
+
+        foreach ($data['horarios'] as $key => $value) {
+            $splitDocentes = explode(',', $value['Docentes']);
+            $data['horarios'][$key]['Docentes'] = '';
+            foreach ($splitDocentes as $k => $val) {
+                $data['horarios'][$key]['Docentes'] .= '<li style="font-size: 10px;">' . $val . '</li>';
+            }
+        }
+
+        $this->session->set_userdata('Export', Exportar::html('estudiante/horario', $data));
+        
+        $data["add_js"] = array('ajax/MainHorarioGrupal.js');
+        $this->load->view('common/header');
+        $this->load->view('docente/horario', $data);
         $this->load->view('common/footer');
     }
 

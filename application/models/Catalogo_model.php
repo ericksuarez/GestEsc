@@ -23,7 +23,8 @@ class Catalogo_model extends CI_Model {
         return $this->getQuery($sql);
     }
 
-    public function Docentes($where = '') {
+    public function 
+            Docentes($where = '') {
         $where = !empty($where) ? 'and ' . $where : $where;
         $sql = "select DISTINCT IDDocente,e.*,u.*,ex.*,
                 SPACE(10) AS Materias,SPACE(10) AS Grupos,concat(e.Nombre,' ',e.APaterno,' ',e.AMaterno) as NomCompleto

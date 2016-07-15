@@ -82,7 +82,7 @@
                                 <li><a href="<?php echo site_url('mantenimiento/notas'); ?>"><i class="fa fa-bookmark"></i> <span>Notas</span></a></li>
                                 <li><a href="<?php echo site_url('mantenimiento/evaluacion_continua'); ?>"><i class="fa fa-pencil"></i> <span>Calificar</span></a></li>
                             </ul>
-                        <li><a href="<?php echo site_url('curricular/horario_individual'); ?>"><i class="fa fa-calendar"></i> <span>Horario</span></a></li>
+                        <li><a href="<?php echo site_url('curricular/horario_docente'); ?>"><i class="fa fa-calendar"></i> <span>Horario</span></a></li>
                         <li><a href="<?php echo site_url('docente/citatorio/0'); ?>"><i class="fa fa-send"></i> <span>Enviar Citatorio</span></a></li>
                         <li><a href="<?php echo site_url('expediente/evaluacion_docente/'.$this->session->userdata('IDExp')); ?>"><i class="fa fa-search"></i> <span>Consulta Evaluación</span></a></li>
                         </li>
