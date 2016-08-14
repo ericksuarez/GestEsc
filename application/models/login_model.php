@@ -54,6 +54,31 @@ class Login_model extends CI_Model {
         return $array[0];
     }
 
+    public function getUserPassword($correo) {
+        $sql_1 = "SELECT * FROM docente
+                  left join usuario on usuario.IdUsuario = docente.Usuario_IdUsuario WHERE Correo='" . $correo . "'";
+        $docente = $this->getOnlyRow($sql_1);
+
+        $sql_2 = "SELECT * FROM estudiante 
+                  left join usuario on usuario.IdUsuario = estudiante.Usuario_IdUsuario WHERE Correo='" . $correo . "'";
+        $estudiante = $this->getOnlyRow($sql_2);
+
+        $sql_3 = "SELECT * FROM empleado 
+                  left join usuario on usuario.IdUsuario = empleado.Usuario_IdUsuario WHERE Correo='" . $correo . "'";
+        $empleado = $this->getOnlyRow($sql_3);
+
+        if (count($docente) > 0) {
+            $query = $docente;
+        }
+        if (count($estudiante) > 0) {
+            $query = $estudiante;
+        }
+        if (count($empleado) > 0) {
+            $query = $empleado;
+        }
+        
+    }
+
     public function getQuery($sql) {
         $query = $this->db->query($sql);
 
