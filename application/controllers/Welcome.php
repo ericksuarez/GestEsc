@@ -18,11 +18,37 @@ class Welcome extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
-	public function index()
+        public function __construct() {
+            parent::__construct();
+            $this->load->library('correo');
+            $this->load->model("ConsultaGral", "gral");
+            $this->load->model("login_model", "login");
+        }
+
+
+        public function index()
 	{
 //             $this->load->view('common/header');
 //		$this->load->view('welcome_message');
 		$this->load->view('login');
 //        $this->load->view('common/footer');
 	}
+        
+        public function restablecer_contrasena() {
+            
+            $data['correo'] = $this->input->post('correo_restore');
+            $info = $this->login->getUserPassword($data['correo']);
+            $data['usuario'] = $info['ClaveUsuario'];
+            $data['contrasena'] = $info['Contrasena'];
+            
+            $restorePass = new Correo();
+            $restorePass->setPara($data['correo']);
+            $restorePass->setAsunto("Solicitud de recuperación de contraseña.");
+            $restorePass->setMensaje($this->load->view('recuperacion_password',$data,TRUE));
+            $restorePass->enviar();
+            
+            $this->session->set_flashdata('exito', 'Se ha enviado la contraseña a su correo, '.$data['correo'].' favor de revisarlo.');
+            redirect('login');
+        
+        }
 }
